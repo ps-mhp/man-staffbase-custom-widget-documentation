@@ -1,0 +1,16 @@
+# node_modules gibt es hier nicht: gebaut wird ausschließlich aus dem
+# Meta-Repo man-staffbase-cms-extensions.
+node_modules/
+coverage/
+
+# dist/ wird bewusst NICHT ignoriert: jsDelivr liefert das Bundle aus dem
+# Git-Tag dieses Repos aus.
+
+# Editor/IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store

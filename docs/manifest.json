@@ -1,0 +1,9 @@
+{
+  "title": "custom-widget-documentation",
+  "summary": "TODO: Ein Satz, was dieses Widget für Redakteure tut.",
+  "pages": [
+    { "id": "overview", "title": "Übersicht", "file": "overview.md" },
+    { "id": "settings", "title": "Einstellungen", "file": "settings.md" },
+    { "id": "faq", "title": "FAQ", "file": "faq.md" }
+  ]
+}
