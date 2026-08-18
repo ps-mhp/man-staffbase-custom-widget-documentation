@@ -24,6 +24,9 @@ interface Selection {
   pageId: string;
 }
 
+/** Shown on a widget's overview card when its manifest has no `icon`. */
+const DEFAULT_WIDGET_ICON = "🧩";
+
 export function DocsApp(): React.JSX.Element {
   const [widgets, setWidgets] = useState<DiscoveredWidgetDocs[] | null>(null);
   const [searchIndex, setSearchIndex] = useState<AnyOrama | null>(null);
@@ -171,9 +174,23 @@ export function DocsApp(): React.JSX.Element {
             <h1 className="docs-app__title">Übersicht der Widgets</h1>
             <ul className="docs-app__overview-list">
               {widgets.map((widget) => (
-                <li className="docs-app__overview-item" key={widget.name}>
-                  <strong className="docs-app__overview-item-title">{widget.manifest.title}</strong>
-                  <p className="docs-app__overview-item-summary">{widget.manifest.summary}</p>
+                <li className="docs-app__overview-card" key={widget.name}>
+                  <span className="docs-app__overview-card-icon" aria-hidden="true">
+                    {widget.manifest.icon ?? DEFAULT_WIDGET_ICON}
+                  </span>
+                  <div className="docs-app__overview-card-body">
+                    <strong className="docs-app__overview-card-title">{widget.manifest.title}</strong>
+                    <p className="docs-app__overview-card-summary">{widget.manifest.summary}</p>
+                    <button
+                      type="button"
+                      className="docs-app__overview-card-link"
+                      onClick={() =>
+                        setSelection({ widgetName: widget.name, pageId: widget.manifest.pages[0]?.id ?? "" })
+                      }
+                    >
+                      Zur Dokumentation →
+                    </button>
+                  </div>
                 </li>
               ))}
             </ul>

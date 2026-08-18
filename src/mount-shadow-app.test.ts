@@ -43,4 +43,52 @@ describe("mountShadowApp", () => {
     expect(second).toBe(first);
     expect(container.shadowRoot!.querySelectorAll("style")).toHaveLength(1);
   });
+
+  describe("mirroring widget-injected head styles", () => {
+    afterEach(() => {
+      document.head.querySelectorAll("style, link[rel='stylesheet']").forEach((el) => el.remove());
+    });
+
+    it("mirrors a <style> already present in document.head at mount time", () => {
+      const headStyle = document.createElement("style");
+      headStyle.id = "some-embedded-widget-styles";
+      headStyle.textContent = ".some-embedded-widget { color: red; }";
+      document.head.appendChild(headStyle);
+
+      const container = document.createElement("div");
+      mountShadowApp(container, ".docs-app {}");
+
+      const mirrored = container.shadowRoot!.querySelector("#some-embedded-widget-styles");
+      expect(mirrored?.textContent).toBe(".some-embedded-widget { color: red; }");
+    });
+
+    it("mirrors a <style> added to document.head after mount (e.g. a lazily-loaded widget bundle)", async () => {
+      const container = document.createElement("div");
+      mountShadowApp(container, ".docs-app {}");
+
+      const headStyle = document.createElement("style");
+      headStyle.id = "late-widget-styles";
+      headStyle.textContent = ".late-widget { color: blue; }";
+      document.head.appendChild(headStyle);
+
+      // MutationObserver callbacks run as a microtask.
+      await Promise.resolve();
+
+      const mirrored = container.shadowRoot!.querySelector("#late-widget-styles");
+      expect(mirrored?.textContent).toBe(".late-widget { color: blue; }");
+    });
+
+    it("does not mirror a <link> that is not a stylesheet", async () => {
+      const container = document.createElement("div");
+      mountShadowApp(container, ".docs-app {}");
+
+      const link = document.createElement("link");
+      link.rel = "icon";
+      link.href = "favicon.ico";
+      document.head.appendChild(link);
+      await Promise.resolve();
+
+      expect(container.shadowRoot!.querySelector("link")).toBeNull();
+    });
+  });
 });
