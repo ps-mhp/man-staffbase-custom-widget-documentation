@@ -37,11 +37,13 @@ function mockFetch(): void {
   jest.spyOn(globalThis, "fetch").mockImplementation(async (input: RequestInfo | URL) => {
     const url = input.toString();
     if (url === "/api/widgets") {
-      return jsonResponse([
-        {
-          url: "https://cdn.jsdelivr.net/gh/ps-mhp/man-staffbase-podcast-display-widget@1.0.0/dist/podcast-display-widget.js",
-        },
-      ]);
+      return jsonResponse({
+        data: [
+          {
+            url: "https://cdn.jsdelivr.net/gh/ps-mhp/man-staffbase-podcast-display-widget@1.0.0/dist/podcast-display-widget.js",
+          },
+        ],
+      });
     }
     if (url.endsWith("/docs/manifest.json")) {
       return jsonResponse(PODCAST_MANIFEST);
