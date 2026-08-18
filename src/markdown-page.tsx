@@ -21,7 +21,7 @@ export interface MarkdownPageProps {
 
 type LoadState = { status: "loading" } | { status: "error" } | { status: "loaded"; content: string };
 
-export function MarkdownPage({ url }: MarkdownPageProps): JSX.Element {
+export function MarkdownPage({ url }: MarkdownPageProps): React.JSX.Element {
   const [state, setState] = useState<LoadState>({ status: "loading" });
 
   useEffect(() => {

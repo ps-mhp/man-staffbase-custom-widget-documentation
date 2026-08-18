@@ -24,7 +24,7 @@ export interface LiveExampleProps {
   example: DocsExample;
 }
 
-export function LiveExample({ widgetName, bundleUrl, docsExamplesUrl, example }: LiveExampleProps): JSX.Element {
+export function LiveExample({ widgetName, bundleUrl, docsExamplesUrl, example }: LiveExampleProps): React.JSX.Element {
   const [resolved, setResolved] = useState<ResolvedExample | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
 

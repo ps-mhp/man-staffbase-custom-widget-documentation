@@ -54,9 +54,12 @@ export async function querySearchIndex(db: AnyOrama, term: string): Promise<Sear
     limit: 10,
   });
 
-  return results.hits.map((hit) => ({
-    widgetName: (hit.document as SearchDoc).widgetName,
-    pageId: (hit.document as SearchDoc).pageId,
-    pageTitle: (hit.document as SearchDoc).pageTitle,
-  }));
+  return results.hits.map((hit) => {
+    const document = hit.document as unknown as SearchDoc;
+    return {
+      widgetName: document.widgetName,
+      pageId: document.pageId,
+      pageTitle: document.pageTitle,
+    };
+  });
 }
