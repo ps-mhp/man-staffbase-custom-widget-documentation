@@ -52,12 +52,16 @@ export function MarkdownPage({ url }: MarkdownPageProps): React.JSX.Element {
   }, [url]);
 
   if (state.status === "loading") {
-    return <p>Seite wird geladen …</p>;
+    return <p className="docs-app__status">Seite wird geladen …</p>;
   }
 
   if (state.status === "error") {
-    return <p>Diese Seite konnte nicht geladen werden.</p>;
+    return <p className="docs-app__status docs-app__status--error">Diese Seite konnte nicht geladen werden.</p>;
   }
 
-  return <ReactMarkdown remarkPlugins={[remarkGfm]}>{state.content}</ReactMarkdown>;
+  return (
+    <div className="docs-app__markdown">
+      <ReactMarkdown remarkPlugins={[remarkGfm]}>{state.content}</ReactMarkdown>
+    </div>
+  );
 }

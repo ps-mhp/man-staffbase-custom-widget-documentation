@@ -39,19 +39,28 @@ export function DocsApp(): React.JSX.Element {
       if (cancelled) return;
       setWidgets(discovered);
 
-      const docs: SearchDoc[] = [];
-      for (const widget of discovered) {
-        for (const page of widget.manifest.pages) {
-          const response = await fetch(`${widget.docsBaseUrl}/${page.file}`);
+      const pageRefs = discovered.flatMap((widget) =>
+        widget.manifest.pages.map((page) => ({ widget, page })),
+      );
+      const docs = await Promise.all(
+        pageRefs.map(async ({ widget, page }): Promise<SearchDoc> => {
+          const url = `${widget.docsBaseUrl}/${page.file}`;
+          // Deliberate: surfaces every requested widget doc page in the
+          // browser console for debugging.
+          console.log(`[custom-widget-documentation] fetching docs page: ${url}`);
+          const response = await fetch(url);
+          if (!response.ok) {
+            console.log(`[custom-widget-documentation] docs page unavailable: ${url} (HTTP ${response.status})`);
+          }
           const content = response.ok ? await response.text() : "";
-          docs.push({
+          return {
             widgetName: widget.name,
             pageId: page.id,
             pageTitle: page.title,
             content,
-          });
-        }
-      }
+          };
+        }),
+      );
       if (!cancelled) {
         setSearchIndex(await buildSearchIndex(docs));
       }
@@ -86,64 +95,85 @@ export function DocsApp(): React.JSX.Element {
   );
 
   if (!widgets) {
-    return <p>Widgets werden gesucht …</p>;
+    return <p className="docs-app__status">Widgets werden gesucht …</p>;
   }
 
   return (
     <div className="docs-app">
       <nav className="docs-app__sidebar">
         <input
+          className="docs-app__search"
           type="search"
           placeholder="Suchen …"
           value={searchTerm}
           onChange={(event) => setSearchTerm(event.target.value)}
         />
         {searchHits.length > 0 && (
-          <ul>
+          <ul className="docs-app__search-results">
             {searchHits.map((hit) => (
               <li key={`${hit.widgetName}-${hit.pageId}`}>
-                <button onClick={() => setSelection({ widgetName: hit.widgetName, pageId: hit.pageId })}>
-                  {hit.pageTitle} ({hit.widgetName})
+                <button
+                  type="button"
+                  className="docs-app__nav-button docs-app__nav-button--search-hit"
+                  onClick={() => setSelection({ widgetName: hit.widgetName, pageId: hit.pageId })}
+                >
+                  {hit.pageTitle} <span className="docs-app__search-hit-widget">({hit.widgetName})</span>
                 </button>
               </li>
             ))}
           </ul>
         )}
 
-        <button onClick={() => setSelection(null)}>Übersicht</button>
+        <button
+          type="button"
+          className={`docs-app__nav-button docs-app__nav-button--top${selection === null ? " docs-app__nav-button--active" : ""}`}
+          onClick={() => setSelection(null)}
+        >
+          Übersicht
+        </button>
 
-        <p>Widgets</p>
-        {widgets.map((widget) => (
-          <div key={widget.name}>
-            <button
-              onClick={() => setSelection({ widgetName: widget.name, pageId: widget.manifest.pages[0]?.id ?? "" })}
-            >
-              {widget.manifest.title}
-            </button>
-            {selectedWidget?.name === widget.name && (
-              <ul>
-                {widget.manifest.pages.map((page) => (
-                  <li key={page.id}>
-                    <button onClick={() => setSelection({ widgetName: widget.name, pageId: page.id })}>
-                      {page.title}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        ))}
+        <p className="docs-app__nav-heading">Widgets</p>
+        <ul className="docs-app__widget-list">
+          {widgets.map((widget) => (
+            <li className="docs-app__widget" key={widget.name}>
+              <button
+                type="button"
+                className={`docs-app__nav-button${selectedWidget?.name === widget.name ? " docs-app__nav-button--active" : ""}`}
+                onClick={() =>
+                  setSelection({ widgetName: widget.name, pageId: widget.manifest.pages[0]?.id ?? "" })
+                }
+              >
+                {widget.manifest.title}
+              </button>
+              {selectedWidget?.name === widget.name && (
+                <ul className="docs-app__page-list">
+                  {widget.manifest.pages.map((page) => (
+                    <li key={page.id}>
+                      <button
+                        type="button"
+                        className={`docs-app__nav-button docs-app__nav-button--page${selectedPage?.id === page.id ? " docs-app__nav-button--active" : ""}`}
+                        onClick={() => setSelection({ widgetName: widget.name, pageId: page.id })}
+                      >
+                        {page.title}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </li>
+          ))}
+        </ul>
       </nav>
 
       <main className="docs-app__content">
         {!selectedWidget || !selectedPage ? (
           <div>
-            <h1>Übersicht der Widgets</h1>
-            <ul>
+            <h1 className="docs-app__title">Übersicht der Widgets</h1>
+            <ul className="docs-app__overview-list">
               {widgets.map((widget) => (
-                <li key={widget.name}>
-                  <strong>{widget.manifest.title}</strong>
-                  <p>{widget.manifest.summary}</p>
+                <li className="docs-app__overview-item" key={widget.name}>
+                  <strong className="docs-app__overview-item-title">{widget.manifest.title}</strong>
+                  <p className="docs-app__overview-item-summary">{widget.manifest.summary}</p>
                 </li>
               ))}
             </ul>

@@ -1,17 +1,282 @@
-// src/widgets/custom-widget-documentation/src/styles/docs-app.scss
+/*!
+ * Copyright 2026, MHP Management und IT-Beratung GmbH and contributors.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+// Colour, radius, spacing and type all come from the shared MAN tokens (see
+// `@shared/stylings/man-tokens`) instead of being retyped here — a value
+// changes in one place (`onetruck-css/src/tokens.scss`) and this widget
+// picks it up the next time it compiles, and at runtime falls back to the
+// same value if the tenant hasn't loaded the MAN theme (preview, a
+// different tenant, no theme at all).
+@use "@shared/stylings/man-tokens" as *;
+
+// Unlike the light-DOM widgets (see `podcast-display-widget/src/styles.ts`'s
+// `ROOT_ID` comment), this widget renders inside its own open shadow root
+// (see `mount-shadow-app.ts`): the host page's CSS cannot reach in here and
+// this stylesheet cannot leak out, so plain class selectors are enough —
+// no id-compound-selector or `!important` fight is needed.
+:host,
+.docs-app {
+  box-sizing: border-box;
+  color: man("text");
+}
+
+.docs-app * {
+  box-sizing: border-box;
+}
+
 .docs-app {
   display: flex;
-  font-family: sans-serif;
-  gap: 1.5rem;
+  align-items: flex-start;
+  gap: man("space-6");
+  @include man-type("body");
 }
+
+.docs-app__status {
+  @include man-type("body-s");
+  color: man("text-muted");
+  margin: 0;
+}
+
+.docs-app__status--error {
+  color: man("error");
+}
+
+// --- Sidebar -----------------------------------------------------------
 
 .docs-app__sidebar {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  min-width: 220px;
+  gap: man("space-2");
+  flex: 0 0 auto;
+  width: 260px;
+  padding: man("space-4");
+  background: man("surface-sunken");
+  border: man("border-width") solid man("border");
+  border-radius: man("radius");
 }
 
+.docs-app__search {
+  box-sizing: border-box;
+  width: 100%;
+  padding: man("space-2") man("space-3");
+  margin-bottom: man("space-2");
+  @include man-type("body-s");
+  color: man("text");
+  background: man("surface");
+  border: man("border-width") solid man("border");
+  border-radius: man("radius");
+
+  &:focus {
+    outline: none;
+    box-shadow: man("focus");
+  }
+}
+
+.docs-app__search-results {
+  list-style: none;
+  margin: 0 0 man("space-3");
+  padding: 0;
+  border-bottom: man("border-width") solid man("border");
+  padding-bottom: man("space-3");
+}
+
+.docs-app__search-hit-widget {
+  color: man("text-subtle");
+}
+
+.docs-app__nav-heading {
+  @include man-type("eyebrow");
+  color: man("text-subtle");
+  text-transform: uppercase;
+  margin: man("space-4") 0 man("space-1");
+}
+
+.docs-app__widget-list,
+.docs-app__page-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.docs-app__page-list {
+  padding-left: man("space-4");
+}
+
+.docs-app__nav-button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: man("space-2") man("space-3");
+  margin: 1px 0;
+  @include man-type("body-s");
+  color: man("text");
+  background: transparent;
+  border: none;
+  border-radius: man("radius");
+  cursor: pointer;
+
+  &:hover {
+    background: man("grey-100");
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: man("focus");
+  }
+}
+
+.docs-app__nav-button--active {
+  background: man("red-50");
+  color: man("red");
+  font-weight: 600;
+}
+
+.docs-app__nav-button--top {
+  @include man-type("label");
+  text-transform: uppercase;
+  margin-bottom: man("space-2");
+}
+
+// --- Content -------------------------------------------------------------
+
 .docs-app__content {
-  flex: 1;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.docs-app__title {
+  @include man-type("h1");
+  color: man("text");
+  margin: 0 0 man("space-5");
+}
+
+.docs-app__overview-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: man("space-3");
+}
+
+.docs-app__overview-item {
+  padding: man("space-4");
+  background: man("surface");
+  border: man("border-width") solid man("border");
+  border-radius: man("radius");
+}
+
+.docs-app__overview-item-title {
+  @include man-type("h4");
+  color: man("text");
+  display: block;
+  margin-bottom: man("space-1");
+}
+
+.docs-app__overview-item-summary {
+  @include man-type("body-s");
+  color: man("text-muted");
+  margin: 0;
+}
+
+// --- Markdown page content ----------------------------------------------
+
+.docs-app__markdown {
+  h1 {
+    @include man-type("h1");
+    color: man("text");
+    margin: 0 0 man("space-4");
+  }
+
+  h2 {
+    @include man-type("h2");
+    color: man("text");
+    margin: man("space-6") 0 man("space-3");
+  }
+
+  h3 {
+    @include man-type("h3");
+    color: man("text");
+    margin: man("space-5") 0 man("space-2");
+  }
+
+  p,
+  li {
+    @include man-type("body");
+    color: man("text");
+  }
+
+  a {
+    color: man("link");
+
+    &:hover {
+      color: man("link-hover");
+    }
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: man("space-4") 0;
+  }
+
+  th,
+  td {
+    border: man("border-width") solid man("border");
+    padding: man("space-2") man("space-3");
+    text-align: left;
+    @include man-type("body-s");
+  }
+
+  th {
+    background: man("surface-sunken");
+    color: man("text");
+    font-weight: 600;
+  }
+
+  code {
+    background: man("surface-sunken");
+    border-radius: man("radius");
+    padding: 0.15em 0.4em;
+  }
+}
+
+// --- Live example ----------------------------------------------------------
+
+.docs-app__example {
+  margin-top: man("space-5");
+  padding: man("space-4");
+  background: man("surface");
+  border: man("border-width") solid man("border");
+  border-radius: man("radius");
+}
+
+.docs-app__example-title {
+  @include man-type("label");
+  color: man("text-subtle");
+  text-transform: uppercase;
+  margin: 0 0 man("space-3");
+}
+
+.docs-app__example-embed {
+  min-height: 40px;
+}
+
+.docs-app__example-attributes {
+  @include man-type("caption");
+  color: man("text-muted");
+  background: man("surface-sunken");
+  border-radius: man("radius");
+  padding: man("space-3");
+  overflow-x: auto;
 }

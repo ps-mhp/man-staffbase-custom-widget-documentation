@@ -19,7 +19,7 @@ import { LiveExample } from "./live-example";
 describe("LiveExample", () => {
   afterEach(() => {
     jest.restoreAllMocks();
-    delete (window as any).__STAFFBASE_DOCS_EXAMPLES__;
+    delete (window as unknown as Record<string, unknown>).__STAFFBASE_DOCS_EXAMPLES__;
     document.querySelectorAll("script").forEach((el) => el.remove());
   });
 

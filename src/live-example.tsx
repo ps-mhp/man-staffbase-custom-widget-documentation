@@ -84,18 +84,18 @@ export function LiveExample({ widgetName, bundleUrl, docsExamplesUrl, example }:
   }, [resolved, bundleUrl, widgetName]);
 
   if (!resolved) {
-    return <p>Beispiel wird geladen …</p>;
+    return <p className="docs-app__status">Beispiel wird geladen …</p>;
   }
 
   return (
-    <div>
-      <p>{resolved.title}</p>
+    <div className="docs-app__example">
+      <p className="docs-app__example-title">{resolved.title}</p>
       {resolved.isLive ? (
-        <div ref={containerRef} />
+        <div className="docs-app__example-embed" ref={containerRef} />
       ) : (
         <>
-          <p>{resolved.unavailableReason}</p>
-          <pre>{JSON.stringify(resolved.attributes, null, 2)}</pre>
+          <p className="docs-app__status">{resolved.unavailableReason}</p>
+          <pre className="docs-app__example-attributes">{JSON.stringify(resolved.attributes, null, 2)}</pre>
         </>
       )}
     </div>
