@@ -1,0 +1,17 @@
+// src/widgets/custom-widget-documentation/src/styles/docs-app.scss
+.docs-app {
+  display: flex;
+  font-family: sans-serif;
+  gap: 1.5rem;
+}
+
+.docs-app__sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 220px;
+}
+
+.docs-app__content {
+  flex: 1;
+}

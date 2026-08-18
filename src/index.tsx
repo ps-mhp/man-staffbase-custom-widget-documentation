@@ -21,10 +21,13 @@ import ReactDOM from "react-dom/client";
 
 import { BlockFactory, BlockDefinition, ExternalBlockDefinition, BaseBlock } from "widget-sdk";
 import { configurationSchema, uiSchema } from "./configuration-schema";
+import { DocsApp } from "./docs-app";
+import { mountShadowApp } from "./mount-shadow-app";
+import docsAppCss from "./styles/docs-app.scss";
 import icon from "../resources/custom-widget-documentation.svg";
 import pkg from "../package.json";
 
-/** Attributes handled by the widget; mirrored in the configuration schema. */
+/** No configuration: the widget discovers everything it renders at runtime. */
 const widgetAttributes: string[] = [];
 
 const factory: BlockFactory = (BaseBlockClass, _widgetApi) => {
@@ -32,8 +35,18 @@ const factory: BlockFactory = (BaseBlockClass, _widgetApi) => {
     private _root: ReactDOM.Root | null = null;
 
     public renderBlock(container: HTMLElement): void {
-      this._root ??= ReactDOM.createRoot(container);
-      this._root.render(<div />);
+      const mountPoint = mountShadowApp(container, docsAppCss);
+
+      // The SDK is assumed to pass the same container for the life of the
+      // block, and mountShadowApp is idempotent, so the root itself is only
+      // created once too.
+      this._root ??= ReactDOM.createRoot(mountPoint);
+      this._root.render(<DocsApp />);
+    }
+
+    public unmountBlock(_container: HTMLElement): void {
+      this._root?.unmount();
+      this._root = null;
     }
 
     public static get observedAttributes(): string[] {
@@ -53,7 +66,7 @@ const blockDefinition: BlockDefinition = {
   blockLevel: "block",
   configurationSchema: configurationSchema,
   uiSchema: uiSchema,
-  label: "CustomWidgetDocumentation",
+  label: "Widget-Dokumentation",
   iconUrl: icon,
 };
 
