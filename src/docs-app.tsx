@@ -14,7 +14,8 @@
 import React, { useEffect, useMemo, useState } from "react";
 import type { AnyOrama } from "@orama/orama";
 
-import { discoverWidgetDocs, DiscoveredWidgetDocs } from "@shared/docs/discovery";
+import { discoverWidgetDocs, DiscoveredWidgetDocs, ParsedBundleUrl, docsBaseUrlFor, docsExamplesUrlFor } from "@shared/docs/discovery";
+import type { DocsManifest } from "@shared/docs/types";
 import { buildSearchIndex, querySearchIndex, SearchDoc, SearchHit } from "./search";
 import { MarkdownPage } from "./markdown-page";
 import { LiveExample } from "./live-example";
@@ -27,12 +28,89 @@ interface Selection {
 /** Shown on a widget's overview card when its manifest has no `icon`. */
 const DEFAULT_WIDGET_ICON = "🧩";
 
+/**
+ * The docs/examples URLs for whichever version of a widget's docs are
+ * currently being viewed — either the installed version (the common case,
+ * `widget.docsBaseUrl`/`widget.docsExamplesUrl` as discovered), or an
+ * older release picked from the version dropdown, in which case these are
+ * recomputed from the widget's repo for that specific tag.
+ */
+interface VersionedDocsLocation {
+  version: string;
+  docsBaseUrl: string;
+  docsExamplesUrl: string;
+  bundleUrl: string;
+}
+
+function versionedLocationFor(widget: DiscoveredWidgetDocs, version: string): VersionedDocsLocation {
+  if (version === widget.installedVersion || !widget.repo) {
+    return {
+      version,
+      docsBaseUrl: widget.docsBaseUrl,
+      docsExamplesUrl: widget.docsExamplesUrl,
+      bundleUrl: widget.bundleUrl,
+    };
+  }
+  const parsed: ParsedBundleUrl = { kind: "jsdelivr", repo: widget.repo, version, name: widget.name };
+  return {
+    version,
+    docsBaseUrl: docsBaseUrlFor(parsed),
+    docsExamplesUrl: docsExamplesUrlFor(parsed),
+    bundleUrl: `https://cdn.jsdelivr.net/gh/${widget.repo}@${version}/dist/${widget.name}.js`,
+  };
+}
+
+/**
+ * Fetches and caches the manifest for whichever version of a widget's docs
+ * is currently selected. Reuses `widget.manifest` (already fetched by
+ * `discoverWidgetDocs`) without a network round-trip when the selected
+ * version is the installed one — which is the default and by far the most
+ * common case — and only fetches an alternate manifest when the editor
+ * actually picks a different version from the dropdown, since older
+ * releases can have a different set of pages entirely.
+ */
+function useVersionedManifest(
+  widget: DiscoveredWidgetDocs | null,
+  location: VersionedDocsLocation | null,
+): DocsManifest | null {
+  const [manifest, setManifest] = useState<DocsManifest | null>(null);
+
+  useEffect(() => {
+    if (!widget || !location) {
+      setManifest(null);
+      return;
+    }
+    if (location.version === widget.installedVersion || !widget.repo) {
+      setManifest(widget.manifest);
+      return;
+    }
+
+    let cancelled = false;
+    setManifest(null);
+    fetch(`${location.docsBaseUrl}/manifest.json`)
+      .then((response) => (response.ok ? (response.json() as Promise<DocsManifest>) : null))
+      .then((fetched) => {
+        if (!cancelled) setManifest(fetched);
+      })
+      .catch(() => {
+        if (!cancelled) setManifest(null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [widget, location]);
+
+  return manifest;
+}
+
 export function DocsApp(): React.JSX.Element {
   const [widgets, setWidgets] = useState<DiscoveredWidgetDocs[] | null>(null);
   const [searchIndex, setSearchIndex] = useState<AnyOrama | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchHits, setSearchHits] = useState<SearchHit[]>([]);
   const [selection, setSelection] = useState<Selection | null>(null);
+  const [viewingVersion, setViewingVersion] = useState<string | null>(null);
+
 
   useEffect(() => {
     let cancelled = false;
@@ -92,9 +170,30 @@ export function DocsApp(): React.JSX.Element {
     () => widgets?.find((widget) => widget.name === selection?.widgetName) ?? null,
     [widgets, selection],
   );
+
+  // The version-switch dropdown defaults to the installed widget's own
+  // version every time the editor navigates to a (possibly different)
+  // widget, rather than remembering a previously-picked older version
+  // across widgets.
+  useEffect(() => {
+    setViewingVersion(selectedWidget?.installedVersion ?? null);
+  }, [selectedWidget?.name]);
+
+  const effectiveVersion = viewingVersion ?? selectedWidget?.installedVersion ?? null;
+  const location = useMemo(
+    () => (selectedWidget && effectiveVersion ? versionedLocationFor(selectedWidget, effectiveVersion) : null),
+    [selectedWidget, effectiveVersion],
+  );
+  const versionedManifest = useVersionedManifest(selectedWidget, location);
+
   const selectedPage = useMemo(
-    () => selectedWidget?.manifest.pages.find((page) => page.id === selection?.pageId) ?? null,
-    [selectedWidget, selection],
+    () => versionedManifest?.pages.find((page) => page.id === selection?.pageId) ?? versionedManifest?.pages[0] ?? null,
+    [versionedManifest, selection],
+  );
+
+  const latestVersion = selectedWidget?.availableVersions[0] ?? null;
+  const isViewingOutdatedVersion = Boolean(
+    selectedWidget && latestVersion && effectiveVersion && effectiveVersion !== latestVersion,
   );
 
   if (!widgets) {
@@ -150,7 +249,7 @@ export function DocsApp(): React.JSX.Element {
               </button>
               {selectedWidget?.name === widget.name && (
                 <ul className="docs-app__page-list">
-                  {widget.manifest.pages.map((page) => (
+                  {(versionedManifest ?? widget.manifest).pages.map((page) => (
                     <li key={page.id}>
                       <button
                         type="button"
@@ -169,7 +268,7 @@ export function DocsApp(): React.JSX.Element {
       </nav>
 
       <main className="docs-app__content">
-        {!selectedWidget || !selectedPage ? (
+        {!selectedWidget ? (
           <div>
             <h1 className="docs-app__title">Übersicht der Widgets</h1>
             <ul className="docs-app__overview-list">
@@ -197,18 +296,57 @@ export function DocsApp(): React.JSX.Element {
           </div>
         ) : (
           <div>
-            <MarkdownPage url={`${selectedWidget.docsBaseUrl}/${selectedPage.file}`} />
-            {selectedWidget.manifest.examples &&
-              selectedPage.id === selectedWidget.manifest.pages[0]?.id &&
-              selectedWidget.manifest.examples.map((example) => (
-                <LiveExample
-                  key={example.title}
-                  widgetName={selectedWidget.name}
-                  bundleUrl={selectedWidget.bundleUrl}
-                  docsExamplesUrl={selectedWidget.docsExamplesUrl}
-                  example={example}
-                />
-              ))}
+            {selectedWidget.availableVersions.length > 1 && location && (
+              <div className="docs-app__version-bar">
+                <label className="docs-app__version-label" htmlFor="docs-app-version-select">
+                  Version
+                </label>
+                <select
+                  id="docs-app-version-select"
+                  className="docs-app__version-select"
+                  value={location.version}
+                  onChange={(event) => setViewingVersion(event.target.value)}
+                >
+                  {selectedWidget.availableVersions.map((version) => (
+                    <option key={version} value={version}>
+                      {version}
+                      {version === latestVersion ? " (aktuell)" : ""}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+            {isViewingOutdatedVersion && latestVersion && (
+              <p className="docs-app__version-warning">
+                Sie sehen die Dokumentation für Version {location?.version}, nicht die aktuellste Version (
+                {latestVersion}).{" "}
+                <button
+                  type="button"
+                  className="docs-app__version-warning-link"
+                  onClick={() => setViewingVersion(latestVersion)}
+                >
+                  Zur aktuellen Version wechseln
+                </button>
+              </p>
+            )}
+            {!versionedManifest || !location || !selectedPage ? (
+              <p className="docs-app__status">Dokumentation für Version {effectiveVersion} wird geladen …</p>
+            ) : (
+              <>
+                <MarkdownPage url={`${location.docsBaseUrl}/${selectedPage.file}`} />
+                {versionedManifest.examples &&
+                  selectedPage.id === versionedManifest.pages[0]?.id &&
+                  versionedManifest.examples.map((example) => (
+                    <LiveExample
+                      key={example.title}
+                      widgetName={selectedWidget.name}
+                      bundleUrl={location.bundleUrl}
+                      docsExamplesUrl={location.docsExamplesUrl}
+                      example={example}
+                    />
+                  ))}
+              </>
+            )}
           </div>
         )}
       </main>
