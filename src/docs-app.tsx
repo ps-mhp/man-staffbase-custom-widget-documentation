@@ -15,6 +15,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import type { AnyOrama } from "@orama/orama";
 
 import { discoverWidgetDocs, DiscoveredWidgetDocs, ParsedBundleUrl, docsBaseUrlFor, docsExamplesUrlFor } from "@shared/docs/discovery";
+import { latestStableVersion } from "@shared/docs/versions";
 import type { DocsManifest } from "@shared/docs/types";
 import { buildSearchIndex, querySearchIndex, SearchDoc, SearchHit } from "./search";
 import { MarkdownPage } from "./markdown-page";
@@ -122,14 +123,21 @@ export function DocsApp(): React.JSX.Element {
       );
       const docs = await Promise.all(
         pageRefs.map(async ({ widget, page }): Promise<SearchDoc> => {
-          const url = `${widget.docsBaseUrl}/${page.file}`;
-          // Deliberate: surfaces every requested widget doc page in the
-          // browser console for debugging.
-          console.log(`[custom-widget-documentation] fetching docs page: ${url}`);
+          // Search always indexes the *current* (latest stable) docs, not
+          // whatever old tag this particular page happens to have
+          // installed — otherwise a stale install (see
+          // `versionedLocationFor`) would make search either 404 silently
+          // or surface outdated content for no benefit to the editor
+          // typing a query. "Current" is deliberately the newest *stable*
+          // tag, never an in-progress `-rc.N` pre-release.
+          const latestVersion = latestStableVersion(widget.availableVersions);
+          const searchLocation = latestVersion ? versionedLocationFor(widget, latestVersion) : null;
+          const url = `${searchLocation?.docsBaseUrl ?? widget.docsBaseUrl}/${page.file}`;
           const response = await fetch(url);
-          if (!response.ok) {
-            console.log(`[custom-widget-documentation] docs page unavailable: ${url} (HTTP ${response.status})`);
-          }
+          // A missing page here is routine (an installed widget pinned to
+          // an old pre-docs tag, a widget with no docs yet) — indexing
+          // simply skips it rather than warning for every such page on
+          // every editor's page load.
           const content = response.ok ? await response.text() : "";
           return {
             widgetName: widget.name,
@@ -168,12 +176,22 @@ export function DocsApp(): React.JSX.Element {
     [widgets, selection],
   );
 
-  // The version-switch dropdown defaults to the installed widget's own
-  // version every time the editor navigates to a (possibly different)
-  // widget, rather than remembering a previously-picked older version
-  // across widgets.
+  // The version-switch dropdown always defaults to the latest *stable*
+  // docs version, not whatever happens to be installed on this particular
+  // page — a page can easily be running an old, never-updated bundle tag,
+  // and defaulting to that would silently show stale docs (and, worse,
+  // immediately spam 404s for versions cut before `/docs` existed) instead
+  // of the current, correct documentation. "Current" deliberately skips
+  // in-progress `-rc.N` pre-releases (see `latestStableVersion`); fall
+  // back to `installedVersion` only when no stable version could be
+  // determined at all (local dev-server widgets, a jsDelivr lookup
+  // failure, or a widget that has only ever shipped pre-releases so far).
   useEffect(() => {
-    setViewingVersion(selectedWidget?.installedVersion ?? null);
+    setViewingVersion(
+      (selectedWidget && latestStableVersion(selectedWidget.availableVersions)) ??
+        selectedWidget?.installedVersion ??
+        null,
+    );
   }, [selectedWidget?.name]);
 
   const effectiveVersion = viewingVersion ?? selectedWidget?.installedVersion ?? null;
@@ -188,7 +206,7 @@ export function DocsApp(): React.JSX.Element {
     [versionedManifest, selection],
   );
 
-  const latestVersion = selectedWidget?.availableVersions[0] ?? null;
+  const latestVersion = selectedWidget ? latestStableVersion(selectedWidget.availableVersions) : null;
   const isViewingOutdatedVersion = Boolean(
     selectedWidget && latestVersion && effectiveVersion && effectiveVersion !== latestVersion,
   );
@@ -315,12 +333,22 @@ export function DocsApp(): React.JSX.Element {
                   value={location.version}
                   onChange={(event) => setViewingVersion(event.target.value)}
                 >
-                  {selectedWidget.availableVersions.map((version) => (
-                    <option key={version} value={version}>
-                      {version}
-                      {version === latestVersion ? " (aktuell)" : ""}
-                    </option>
-                  ))}
+                  {selectedWidget.availableVersions.map((version) => {
+                    const isLatest = version === latestVersion;
+                    // Only call out "installed" when it differs from
+                    // "current" — if they're the same version, the
+                    // "(aktuell)" label alone already says everything;
+                    // showing both would just be noise.
+                    const isInstalled =
+                      version === selectedWidget.installedVersion && selectedWidget.installedVersion !== latestVersion;
+                    return (
+                      <option key={version} value={version}>
+                        {version}
+                        {isLatest ? " (aktuell)" : ""}
+                        {isInstalled ? " (installiert)" : ""}
+                      </option>
+                    );
+                  })}
                 </select>
               </div>
             )}

@@ -148,8 +148,17 @@
     background: man("grey-100");
   }
 
-  &:focus-visible {
+  // Reset the browser default outline (Chromium/WebKit render it as a
+  // solid-looking blue ring on plain `:focus`, which a mouse click *does*
+  // trigger, unlike `:focus-visible`) unconditionally, then draw our own
+  // (subtler, token-based) focus ring only for keyboard/`:focus-visible`
+  // navigation — matching what a sighted mouse user already sees via
+  // `:hover`/`--active` without also flashing blue on every click.
+  &:focus {
     outline: none;
+  }
+
+  &:focus-visible {
     box-shadow: man("focus");
   }
 }
@@ -243,8 +252,11 @@
     text-decoration: underline;
   }
 
-  &:focus-visible {
+  &:focus {
     outline: none;
+  }
+
+  &:focus-visible {
     box-shadow: man("focus");
   }
 }
@@ -274,8 +286,11 @@
   border-radius: man("radius");
   cursor: pointer;
 
-  &:focus-visible {
+  &:focus {
     outline: none;
+  }
+
+  &:focus-visible {
     box-shadow: man("focus");
   }
 }
@@ -307,8 +322,11 @@
     color: man("link-hover");
   }
 
-  &:focus-visible {
+  &:focus {
     outline: none;
+  }
+
+  &:focus-visible {
     box-shadow: man("focus");
   }
 }
