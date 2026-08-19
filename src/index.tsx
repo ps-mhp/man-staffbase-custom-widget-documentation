@@ -11,6 +11,7 @@
  * limitations under the License.
  */
 
+import { startWidget } from "@shared/dev-mode/start-widget";
 import { setPublicPathFromBundle } from "@shared/public-path";
 
 // Must run before any dynamic `import()`, so that lazily loaded chunks come
@@ -76,4 +77,12 @@ const externalBlockDefinition: ExternalBlockDefinition = {
   version: pkg.version,
 };
 
-window.defineBlock(externalBlockDefinition);
+// Registration runs through `startWidget`, which first asks whether a local
+// development server serves this widget. On virtually every browser the answer
+// is no and this registers immediately; on the developer's machine the local
+// bundle takes over and registers instead. Only ever one of the two, a block
+// name cannot be claimed twice.
+void startWidget({
+  name: "custom-widget-documentation",
+  register: () => window.defineBlock(externalBlockDefinition),
+});

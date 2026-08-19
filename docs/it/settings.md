@@ -1,8 +1,13 @@
 # Impostazioni
 
-TODO: Elencare ogni impostazione presente nella finestra di dialogo di configurazione, indicando il nome, la sua
-funzione e — se pertinente — i valori consentiti.
+Questo widget **non ha impostazioni**. È sufficiente inserirlo in una pagina
+; il contenuto e la navigazione derivano interamente dai
+widget installati.
 
-| Impostazione | Descrizione |
+## Cosa è invece possibile controllare
+
+| Voce | Descrizione |
 | --- | --- |
-| _(Nome)_ | _(Descrizione)_ |
+| Destinatari | Dipende dalla pagina, non dal widget. È consigliabile una pagina dedicata ai redattori. |
+| Posizionamento | Preferibilmente a tutta larghezza della pagina. La barra laterale e il contenuto richiedono spazio. |
+| Contenuto | Non modificabile: vengono sempre visualizzati tutti i widget installati che dispongono di una documentazione. |

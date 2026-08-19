@@ -1,11 +1,16 @@
 {
-  "title": "custom-widget-documentation",
-  "summary": "TODO: Ein Satz, was dieses Widget für Redakteure tut.",
+  "title": "Widget-Dokumentation",
+  "summary": "Erzeugt eine durchsuchbare Hilfeseite mit der Dokumentation aller installierten Widgets.",
   "pages": [
     {
       "id": "overview",
       "title": "Übersicht",
       "file": "overview.md"
+    },
+    {
+      "id": "usage",
+      "title": "Schritt für Schritt",
+      "file": "usage.md"
     },
     {
       "id": "settings",

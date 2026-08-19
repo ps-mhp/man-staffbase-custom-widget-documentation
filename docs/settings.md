@@ -1,8 +1,13 @@
 # Einstellungen
 
-TODO: Liste jede Einstellung im Konfigurationsdialog auf, mit Name, was sie
-bewirkt, und — falls relevant — welche Werte erlaubt sind.
+Dieses Widget hat **keine Einstellungen**. Es genügt, es auf einer Seite zu
+platzieren; Inhalt und Navigation ergeben sich vollständig aus den
+installierten Widgets.
 
-| Einstellung | Beschreibung |
+## Was Sie stattdessen steuern
+
+| Punkt | Beschreibung |
 | --- | --- |
-| _(Name)_ | _(Beschreibung)_ |
+| Zielgruppe | Ergibt sich aus der Seite, nicht aus dem Widget. Sinnvoll ist eine Seite für Redakteur:innen. |
+| Platzierung | Am besten über die volle Seitenbreite. Sidebar und Inhalt brauchen Raum. |
+| Umfang | Nicht steuerbar: Es erscheinen immer alle installierten Widgets, die eine Dokumentation mitbringen. |

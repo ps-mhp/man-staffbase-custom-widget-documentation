@@ -1,8 +1,13 @@
 # Paramètres
 
-À faire : répertorier chaque paramètre de la boîte de dialogue de configuration, en indiquant son nom, son
-effet et, le cas échéant, les valeurs autorisées.
+Ce widget ne dispose **d'aucun paramètre**. Il suffit de le placer sur une page
+; le contenu et la navigation découlent entièrement des
+widgets installés.
 
-| Paramètre | Description |
+## Ce que vous pouvez contrôler à la place
+
+| Élément | Description |
 | --- | --- |
-| _(Nom)_ | _(Description)_ |
+| Public cible | Déterminé par la page, et non par le widget. Une page destinée aux rédacteurs est un bon choix. |
+| Emplacement | De préférence sur toute la largeur de la page. La barre latérale et le contenu ont besoin d’espace. |
+| Contenu | Non configurable : tous les widgets installés qui comportent une documentation s’affichent systématiquement. |

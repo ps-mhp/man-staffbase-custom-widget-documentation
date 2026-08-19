@@ -1,8 +1,13 @@
 # Ustawienia
 
-Do zrobienia: Wymień wszystkie ustawienia w oknie dialogowym konfiguracji, podając ich nazwy,
-funkcje oraz — w stosownych przypadkach — dopuszczalne wartości.
+Ten widget nie ma **żadnych ustawień**. Wystarczy umieścić go na stronie;
+treść i nawigacja wynikają w całości z
+zainstalowanych widgetów.
 
-| Ustawienie | Opis |
+## Co można natomiast kontrolować
+
+| Punkt | Opis |
 | --- | --- |
-| _(Nazwa)_ | _(Opis)_ |
+| Grupa docelowa | Wynika ze strony, a nie z widżetu. Sensowne jest utworzenie strony dla redaktorów. |
+| Umiejscowienie | Najlepiej na całej szerokości strony. Pasek boczny i treść wymagają miejsca. |
+| Zakres | Nie można kontrolować: zawsze wyświetlane są wszystkie zainstalowane widżety, które posiadają dokumentację. |

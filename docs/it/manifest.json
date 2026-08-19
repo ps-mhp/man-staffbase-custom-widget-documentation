@@ -1,11 +1,16 @@
 {
-  "title": "documentazione-widget-personalizzato",
-  "summary": "TODO: Una frase che spieghi a cosa serve questo widget per i redattori.",
+  "title": "Documentazione sui widget",
+  "summary": "Crea una pagina di aiuto consultabile contenente la documentazione di tutti i widget installati.",
   "pages": [
     {
       "id": "overview",
       "title": "Panoramica",
       "file": "overview.md"
+    },
+    {
+      "id": "usage",
+      "title": "Passo dopo passo",
+      "file": "usage.md"
     },
     {
       "id": "settings",

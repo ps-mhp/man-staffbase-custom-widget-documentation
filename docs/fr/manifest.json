@@ -1,11 +1,16 @@
 {
-  "title": "documentation-sur-les-widgets-personnalisés",
-  "summary": "À faire : une phrase expliquant ce que ce widget apporte aux rédacteurs.",
+  "title": "Documentation sur les widgets",
+  "summary": "Crée une page d'aide consultable contenant la documentation de tous les widgets installés.",
   "pages": [
     {
       "id": "overview",
       "title": "Aperçu",
       "file": "overview.md"
+    },
+    {
+      "id": "usage",
+      "title": "Étape par étape",
+      "file": "usage.md"
     },
     {
       "id": "settings",

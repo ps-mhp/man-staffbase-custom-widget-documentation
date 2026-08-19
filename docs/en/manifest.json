@@ -1,11 +1,16 @@
 {
-  "title": "custom-widget-documentation",
-  "summary": "TODO: A sentence explaining what this widget does for editors.",
+  "title": "Widget Documentation",
+  "summary": "Creates a searchable help page containing documentation for all installed widgets.",
   "pages": [
     {
       "id": "overview",
       "title": "Overview",
       "file": "overview.md"
+    },
+    {
+      "id": "usage",
+      "title": "Step by step",
+      "file": "usage.md"
     },
     {
       "id": "settings",

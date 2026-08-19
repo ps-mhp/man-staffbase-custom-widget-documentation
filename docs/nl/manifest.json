@@ -1,11 +1,16 @@
 {
-  "title": "documentatie-voor-aangepaste-widgets",
-  "summary": "TODO: Een zin waarin wordt uitgelegd wat deze widget voor redacteuren doet.",
+  "title": "Documentatie over widgets",
+  "summary": "Maakt een doorzoekbare help-pagina aan met de documentatie van alle geïnstalleerde widgets.",
   "pages": [
     {
       "id": "overview",
       "title": "Overzicht",
       "file": "overview.md"
+    },
+    {
+      "id": "usage",
+      "title": "Stap voor stap",
+      "file": "usage.md"
     },
     {
       "id": "settings",
