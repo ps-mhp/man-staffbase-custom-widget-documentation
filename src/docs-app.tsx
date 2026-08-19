@@ -25,9 +25,6 @@ interface Selection {
   pageId: string;
 }
 
-/** Shown on a widget's overview card when its manifest has no `icon`. */
-const DEFAULT_WIDGET_ICON = "🧩";
-
 /**
  * The docs/examples URLs for whichever version of a widget's docs are
  * currently being viewed — either the installed version (the common case,
@@ -274,9 +271,20 @@ export function DocsApp(): React.JSX.Element {
             <ul className="docs-app__overview-list">
               {widgets.map((widget) => (
                 <li className="docs-app__overview-card" key={widget.name}>
-                  <span className="docs-app__overview-card-icon" aria-hidden="true">
-                    {widget.manifest.icon ?? DEFAULT_WIDGET_ICON}
-                  </span>
+                  <img
+                    className="docs-app__overview-card-icon"
+                    src={widget.iconUrl}
+                    alt=""
+                    aria-hidden="true"
+                    onError={(event) => {
+                      // The SVG resolves structurally (see `iconUrlFor`) but
+                      // a network hiccup or an unusually old release
+                      // predating `resources/` could still 404 it — hide the
+                      // broken-image icon rather than showing the browser's
+                      // placeholder glyph.
+                      event.currentTarget.style.visibility = "hidden";
+                    }}
+                  />
                   <div className="docs-app__overview-card-body">
                     <strong className="docs-app__overview-card-title">{widget.manifest.title}</strong>
                     <p className="docs-app__overview-card-summary">{widget.manifest.summary}</p>

@@ -73,6 +73,11 @@
   @include man-type("body-s");
   color: man("text");
   background: man("surface");
+  // `type="search"` gets its own native chrome (rounded corners, a
+  // built-in clear button) in WebKit unless reset — same class of bug as
+  // the `<button>` appearance issue above.
+  appearance: none;
+  -webkit-appearance: none;
   border: man("border-width") solid man("border");
   border-radius: man("radius");
 
@@ -109,7 +114,14 @@
 }
 
 .docs-app__page-list {
+  // A plain `padding-left` alone reads as "slightly indented", not as "these
+  // pages belong to that widget" — a visible guide line ties the group
+  // together the way a real tree view would, and the extra indent plus
+  // smaller type make the nesting unambiguous even at a glance.
   padding-left: man("space-4");
+  margin-left: man("space-2");
+  margin-top: 1px;
+  border-left: man("border-width") solid man("border");
 }
 
 .docs-app__nav-button {
@@ -121,6 +133,13 @@
   @include man-type("body-s");
   color: man("text");
   background: transparent;
+  // Buttons default to the browser/OS's native "push-button" chrome
+  // (`-webkit-appearance: auto`) unless explicitly reset — WebKit in
+  // particular then ignores `background`/`border` entirely and paints its
+  // own (often blue, "default action") widget on top, which is exactly the
+  // stray blue button reported in the doc widget's nav and version banner.
+  appearance: none;
+  -webkit-appearance: none;
   border: none;
   border-radius: man("radius");
   cursor: pointer;
@@ -145,6 +164,10 @@
   @include man-type("label");
   text-transform: uppercase;
   margin-bottom: man("space-2");
+}
+
+.docs-app__nav-button--page {
+  @include man-type("caption");
 }
 
 // --- Content -------------------------------------------------------------
@@ -180,8 +203,9 @@
 }
 
 .docs-app__overview-card-icon {
-  font-size: 28px;
-  line-height: 1;
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
 }
 
 .docs-app__overview-card-body {
@@ -208,6 +232,8 @@
   @include man-type("body-s");
   color: man("link");
   background: transparent;
+  appearance: none;
+  -webkit-appearance: none;
   border: none;
   cursor: pointer;
   font-weight: 600;
@@ -215,6 +241,70 @@
   &:hover {
     color: man("link-hover");
     text-decoration: underline;
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: man("focus");
+  }
+}
+
+// --- Version switcher ----------------------------------------------------
+
+.docs-app__version-bar {
+  display: flex;
+  align-items: center;
+  gap: man("space-2");
+  margin: 0 0 man("space-4");
+}
+
+.docs-app__version-label {
+  @include man-type("body-s");
+  color: man("text-muted");
+}
+
+.docs-app__version-select {
+  @include man-type("body-s");
+  color: man("text");
+  background: man("surface");
+  appearance: none;
+  -webkit-appearance: none;
+  padding: man("space-1") man("space-3");
+  border: man("border-width") solid man("border");
+  border-radius: man("radius");
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: man("focus");
+  }
+}
+
+.docs-app__version-warning {
+  @include man-type("body-s");
+  color: man("warning-ink");
+  background: rgba(255, 205, 0, 0.15);
+  border: man("border-width") solid man("warning");
+  border-radius: man("radius");
+  padding: man("space-3");
+  margin: 0 0 man("space-4");
+}
+
+.docs-app__version-warning-link {
+  @include man-type("body-s");
+  color: man("link");
+  background: transparent;
+  appearance: none;
+  -webkit-appearance: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  font-weight: 600;
+  text-decoration: underline;
+
+  &:hover {
+    color: man("link-hover");
   }
 
   &:focus-visible {

@@ -35,6 +35,75 @@ const MOUNT_POINT_ATTRIBUTE = "data-docs-app-mount";
 const STYLE_MIRROR_SELECTOR = "style, link[rel='stylesheet']";
 const mirroredShadowRoots = new WeakSet<ShadowRoot>();
 
+/**
+ * The generic head-mirroring above clones `<link>`/`<style>` DOM nodes
+ * as-is, which is correct for widget-injected styles (they are plain
+ * class-selector rules) but not sufficient for the tenant's MAN-CI branding
+ * stylesheet (Studio → Einstellungen → Branding → Custom CSS, served as a
+ * `<link>` ending in `custom.css`): that file defines its colour/spacing
+ * tokens as CSS custom properties on `:root`, and `:root` never matches
+ * anything *inside* a shadow tree (there is no document root element in
+ * there), so a mere clone leaves those declarations inert. The custom
+ * properties themselves still cross the shadow boundary via normal
+ * inheritance from the real `:root`, which covers `man(...)` (`var(--man-x,
+ * fallback)`) — but any element-selector rule in that file targeting bare
+ * `button`/`a`/`select`/etc. (not a custom property) would still never
+ * reach content rendered in this shadow root. Fetching the file's own CSS
+ * text and inlining it as a `<style>` sidesteps both problems and does not
+ * depend on the mirroring's clone-and-hope-`:root`-matches approach.
+ */
+const CUSTOM_CSS_HREF_PATTERN = /custom\.css(\?.*)?$/i;
+const brandingCssInjectedShadowRoots = new WeakSet<ShadowRoot>();
+let cachedBrandingCss: Promise<string | null> | null = null;
+
+function findBrandingCssLink(): HTMLLinkElement | null {
+  const candidates = document.head.querySelectorAll<HTMLLinkElement>("link[rel='stylesheet']");
+  return (
+    Array.from(candidates).find((link) => CUSTOM_CSS_HREF_PATTERN.test(link.getAttribute("href") ?? "")) ?? null
+  );
+}
+
+async function fetchBrandingCss(): Promise<string | null> {
+  const link = findBrandingCssLink();
+  if (!link?.href) {
+    return null;
+  }
+  try {
+    const response = await fetch(link.href, { credentials: "include" });
+    if (!response.ok) {
+      return null;
+    }
+    return await response.text();
+  } catch {
+    // No network / CORS-restricted host / running in a test environment
+    // without `fetch` mocked — fail soft, the generic head-mirroring above
+    // still covers plain class-selector widget styles either way.
+    return null;
+  }
+}
+
+function injectBrandingCssInto(shadowRoot: ShadowRoot): void {
+  if (brandingCssInjectedShadowRoots.has(shadowRoot)) {
+    return;
+  }
+  brandingCssInjectedShadowRoots.add(shadowRoot);
+
+  cachedBrandingCss ??= fetchBrandingCss();
+  cachedBrandingCss
+    .then((css) => {
+      if (!css) {
+        return;
+      }
+      const style = document.createElement("style");
+      style.setAttribute("data-docs-app-branding-css", "");
+      style.textContent = css;
+      shadowRoot.insertBefore(style, shadowRoot.firstChild);
+    })
+    .catch(() => {
+      // Already handled inside fetchBrandingCss; nothing to do here.
+    });
+}
+
 function isStyleMirrorCandidate(node: Node): node is HTMLStyleElement | HTMLLinkElement {
   return (
     node instanceof HTMLStyleElement ||
@@ -93,6 +162,7 @@ export function mountShadowApp(container: HTMLElement, css: string): HTMLDivElem
   shadowRoot.appendChild(mountPoint);
 
   mirrorHeadStylesInto(shadowRoot);
+  injectBrandingCssInto(shadowRoot);
 
   return mountPoint;
 }
