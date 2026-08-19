@@ -15,7 +15,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import type { AnyOrama } from "@orama/orama";
 
 import { discoverWidgetDocs, DiscoveredWidgetDocs, ParsedBundleUrl, docsBaseUrlFor, docsExamplesUrlFor } from "@shared/docs/discovery";
-import { latestStableVersion } from "@shared/docs/versions";
+import { currentStableVersion } from "@shared/docs/versions";
 import type { DocsManifest } from "@shared/docs/types";
 import { buildSearchIndex, querySearchIndex, SearchDoc, SearchHit } from "./search";
 import { MarkdownPage } from "./markdown-page";
@@ -130,12 +130,14 @@ function useVersionedManifest(
  * page happens to have installed: a page can easily run an old,
  * never-updated bundle, and defaulting to that would show stale docs and
  * spam 404s for versions cut before `/docs` existed. `installedVersion`
- * is the fallback only when no stable version can be determined at all —
- * local dev-server widgets, a failed jsDelivr lookup, or a widget that
- * has so far only ever shipped pre-releases.
+ * counts only where it is itself the newest stable release — see
+ * `currentStableVersion` for the jsDelivr metadata lag that makes that a
+ * routine case rather than an exotic one — or when no stable version can
+ * be determined at all (local dev-server widgets, a failed jsDelivr
+ * lookup, a widget that has so far only ever shipped pre-releases).
  */
 function defaultVersionFor(widget: DiscoveredWidgetDocs | null): string | null {
-  return (widget && latestStableVersion(widget.availableVersions)) ?? widget?.installedVersion ?? null;
+  return widget ? currentStableVersion(widget.availableVersions, widget.installedVersion) : null;
 }
 
 export function DocsApp(): React.JSX.Element {
@@ -167,7 +169,7 @@ export function DocsApp(): React.JSX.Element {
           // or surface outdated content for no benefit to the editor
           // typing a query. "Current" is deliberately the newest *stable*
           // tag, never an in-progress `-rc.N` pre-release.
-          const latestVersion = latestStableVersion(widget.availableVersions);
+          const latestVersion = currentStableVersion(widget.availableVersions, widget.installedVersion);
           const searchLocation = latestVersion ? versionedLocationFor(widget, latestVersion) : null;
           const url = `${searchLocation?.docsBaseUrl ?? widget.docsBaseUrl}/${page.file}`;
           const response = await fetch(url);
@@ -272,7 +274,7 @@ export function DocsApp(): React.JSX.Element {
     [versionedManifest, selection],
   );
 
-  const latestVersion = selectedWidget ? latestStableVersion(selectedWidget.availableVersions) : null;
+  const latestVersion = defaultVersionFor(selectedWidget);
   const isViewingOutdatedVersion = Boolean(
     selectedWidget && latestVersion && effectiveVersion && effectiveVersion !== latestVersion,
   );

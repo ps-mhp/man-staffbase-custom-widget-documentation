@@ -253,4 +253,48 @@ describe("DocsApp", () => {
     expect(optionValues).toContain("0.2.0-rc.1");
     expect((versionSelect as HTMLSelectElement).value).toBe("0.2.0-rc.1");
   });
+
+  it("defaults to the installed release when jsDelivr's version listing still ranks an older one as newest", async () => {
+    // The reported case, verbatim: podcast-display-widget@0.3.0 is live,
+    // installed, and readable on the CDN, but `data.jsdelivr.com` still
+    // tops out at 0.3.0-rc.1 — so the newest *listed* stable release is
+    // 0.2.0. Defaulting to that shows docs a whole release out of date and
+    // labels the running version as outdated.
+    jest.spyOn(globalThis, "fetch").mockImplementation(async (input: RequestInfo | URL) => {
+      const url = input.toString();
+      if (url === "/api/widgets") {
+        return jsonResponse({
+          data: [
+            {
+              url: "https://cdn.jsdelivr.net/gh/ps-mhp/man-staffbase-podcast-display-widget@0.3.0/dist/podcast-display-widget.js",
+            },
+          ],
+        });
+      }
+      if (url === "https://data.jsdelivr.com/v1/packages/gh/ps-mhp/man-staffbase-podcast-display-widget") {
+        return jsonResponse({
+          versions: [{ version: "0.3.0-rc.1" }, { version: "0.2.0" }, { version: "0.1.1" }],
+        });
+      }
+      if (url.endsWith("/docs/manifest.json")) {
+        return jsonResponse(PODCAST_MANIFEST);
+      }
+      if (url.endsWith("overview.md")) {
+        return textResponse("# Übersicht\n\nZeigt Podcasts.");
+      }
+      if (url.endsWith("settings.md")) {
+        return textResponse("# Einstellungen\n\nStellt den Anzeigemodus ein.");
+      }
+      throw new Error(`unexpected fetch: ${url}`);
+    });
+
+    render(<DocsApp />);
+
+    fireEvent.click(await screen.findByRole("button", { name: "Podcast-Anzeige" }));
+    await screen.findByRole("heading", { name: "Übersicht" });
+
+    expect((await screen.findByLabelText("Version")) as HTMLSelectElement).toHaveValue("0.3.0");
+    // ...and it must not be sold to the reader as an old version.
+    expect(screen.queryByText(/nicht die aktuellste/i)).not.toBeInTheDocument();
+  });
 });
