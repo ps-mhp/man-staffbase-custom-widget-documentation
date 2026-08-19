@@ -59,6 +59,16 @@ function setHash(hash: string): void {
   window.history.replaceState(null, "", hash);
 }
 
+/**
+ * Builds a hash in the format the widget writes — a valid CSS identifier,
+ * because the host page runs `document.querySelector(location.hash)` (see
+ * `hash-route.ts`).
+ */
+function hashFor(widget: string, page?: string, version?: string): string {
+  const named = version ? `${widget}_a${version.replace(/\./g, "_d")}` : widget;
+  return page ? `#docs__${named}__${page}` : `#docs__${named}`;
+}
+
 describe("docs navigation in the URL", () => {
   beforeEach(() => {
     setHash("/");
@@ -70,7 +80,7 @@ describe("docs navigation in the URL", () => {
   });
 
   it("opens the page named in the URL", async () => {
-    setHash(`#/${WIDGET}/settings`);
+    setHash(hashFor(WIDGET, "settings"));
 
     render(<DocsApp />);
 
@@ -78,7 +88,7 @@ describe("docs navigation in the URL", () => {
   });
 
   it("opens a widget's first page when the URL names no page", async () => {
-    setHash(`#/${WIDGET}`);
+    setHash(hashFor(WIDGET));
 
     render(<DocsApp />);
 
@@ -86,26 +96,26 @@ describe("docs navigation in the URL", () => {
   });
 
   it("keeps the shared URL intact while the widget list is still loading", async () => {
-    setHash(`#/${WIDGET}/settings`);
+    setHash(hashFor(WIDGET, "settings"));
 
     render(<DocsApp />);
 
     // The starting state is "overview, nothing selected". Were it written
     // out before the widget list arrives, it would overwrite exactly the
     // link that was just opened — the one bug that silently breaks sharing.
-    expect(window.location.hash).toBe(`#/${WIDGET}/settings`);
+    expect(window.location.hash).toBe(hashFor(WIDGET, "settings"));
     expect(await screen.findByRole("heading", { name: "Einstellungen" })).toBeInTheDocument();
-    expect(window.location.hash).toBe(`#/${WIDGET}/settings`);
+    expect(window.location.hash).toBe(hashFor(WIDGET, "settings"));
   });
 
   it("writes the URL as the reader navigates", async () => {
     render(<DocsApp />);
 
     fireEvent.click(await screen.findByRole("button", { name: "Podcast-Anzeige" }));
-    await waitFor(() => expect(window.location.hash).toBe(`#/${WIDGET}/overview`));
+    await waitFor(() => expect(window.location.hash).toBe(hashFor(WIDGET, "overview")));
 
     fireEvent.click(await screen.findByRole("button", { name: "Einstellungen" }));
-    await waitFor(() => expect(window.location.hash).toBe(`#/${WIDGET}/settings`));
+    await waitFor(() => expect(window.location.hash).toBe(hashFor(WIDGET, "settings")));
   });
 
   it("goes back to the previous page when the browser goes back", async () => {
@@ -116,7 +126,7 @@ describe("docs navigation in the URL", () => {
     expect(await screen.findByRole("heading", { name: "Einstellungen" })).toBeInTheDocument();
 
     // jsdom keeps the history entries but fires no popstate for `back()`.
-    setHash(`#/${WIDGET}/overview`);
+    setHash(hashFor(WIDGET, "overview"));
     act(() => {
       window.dispatchEvent(new PopStateEvent("popstate"));
     });
@@ -125,7 +135,7 @@ describe("docs navigation in the URL", () => {
   });
 
   it("shows the overview for a link to a widget that is not installed here", async () => {
-    setHash("#/not-installed-widget/settings");
+    setHash(hashFor("not-installed-widget", "settings"));
 
     render(<DocsApp />);
 
@@ -134,7 +144,7 @@ describe("docs navigation in the URL", () => {
   });
 
   it("opens the docs version named in the URL", async () => {
-    setHash(`#/${WIDGET}@1.0.0/settings`);
+    setHash(hashFor(WIDGET, "settings", "1.0.0"));
 
     render(<DocsApp />);
 
@@ -143,7 +153,7 @@ describe("docs navigation in the URL", () => {
   });
 
   it("ignores a version in the URL that was never released", async () => {
-    setHash(`#/${WIDGET}@9.9.9/settings`);
+    setHash(hashFor(WIDGET, "settings", "9.9.9"));
 
     render(<DocsApp />);
 
@@ -156,9 +166,20 @@ describe("docs navigation in the URL", () => {
     render(<DocsApp />);
 
     fireEvent.click(await screen.findByRole("button", { name: "Podcast-Anzeige" }));
-    await waitFor(() => expect(window.location.hash).toBe(`#/${WIDGET}/overview`));
+    await waitFor(() => expect(window.location.hash).toBe(hashFor(WIDGET, "overview")));
 
     fireEvent.change(await screen.findByLabelText("Version"), { target: { value: "1.0.0" } });
-    await waitFor(() => expect(window.location.hash).toBe(`#/${WIDGET}@1.0.0/overview`));
+    await waitFor(() => expect(window.location.hash).toBe(hashFor(WIDGET, "overview", "1.0.0")));
+  });
+
+  // Links were shared in the old `#/widget@version/page` shape before the
+  // clash with the host's anchor-scrolling was found.
+  it("still opens a link shared in the old format, and rewrites it", async () => {
+    setHash(`#/${WIDGET}@1.0.0/settings`);
+
+    render(<DocsApp />);
+
+    expect(await screen.findByRole("heading", { name: "Einstellungen" })).toBeInTheDocument();
+    await waitFor(() => expect(window.location.hash).toBe(hashFor(WIDGET, "settings", "1.0.0")));
   });
 });
