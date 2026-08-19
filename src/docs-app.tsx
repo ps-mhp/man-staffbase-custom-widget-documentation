@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { AnyOrama } from "@orama/orama";
 
 import { discoverWidgetDocs, DiscoveredWidgetDocs, ParsedBundleUrl, docsBaseUrlFor, docsExamplesUrlFor } from "@shared/docs/discovery";
@@ -21,11 +21,8 @@ import { buildSearchIndex, querySearchIndex, SearchDoc, SearchHit } from "./sear
 import { MarkdownPage } from "./markdown-page";
 import { LiveExample } from "./live-example";
 import { LoadingSurface } from "./loading-surface";
-
-interface Selection {
-  widgetName: string;
-  pageId: string;
-}
+import type { Selection } from "./hash-route";
+import { useHashRoute } from "./use-hash-route";
 
 /**
  * The docs/examples URLs for whichever version of a widget's docs are
@@ -126,6 +123,21 @@ function useVersionedManifest(
   return { manifest, error };
 }
 
+/**
+ * The docs version shown for a widget when nobody picked one.
+ *
+ * Deliberately the newest *stable* release rather than whatever tag this
+ * page happens to have installed: a page can easily run an old,
+ * never-updated bundle, and defaulting to that would show stale docs and
+ * spam 404s for versions cut before `/docs` existed. `installedVersion`
+ * is the fallback only when no stable version can be determined at all —
+ * local dev-server widgets, a failed jsDelivr lookup, or a widget that
+ * has so far only ever shipped pre-releases.
+ */
+function defaultVersionFor(widget: DiscoveredWidgetDocs | null): string | null {
+  return (widget && latestStableVersion(widget.availableVersions)) ?? widget?.installedVersion ?? null;
+}
+
 export function DocsApp(): React.JSX.Element {
   const [widgets, setWidgets] = useState<DiscoveredWidgetDocs[] | null>(null);
   const [searchIndex, setSearchIndex] = useState<AnyOrama | null>(null);
@@ -201,23 +213,39 @@ export function DocsApp(): React.JSX.Element {
     [widgets, selection],
   );
 
-  // The version-switch dropdown always defaults to the latest *stable*
-  // docs version, not whatever happens to be installed on this particular
-  // page — a page can easily be running an old, never-updated bundle tag,
-  // and defaulting to that would silently show stale docs (and, worse,
-  // immediately spam 404s for versions cut before `/docs` existed) instead
-  // of the current, correct documentation. "Current" deliberately skips
-  // in-progress `-rc.N` pre-releases (see `latestStableVersion`); fall
-  // back to `installedVersion` only when no stable version could be
-  // determined at all (local dev-server widgets, a jsDelivr lookup
-  // failure, or a widget that has only ever shipped pre-releases so far).
+  // A version that arrived with a shared link has to survive the effect
+  // below, which fires right after the selection it came with and would
+  // otherwise immediately reset it to the default.
+  const requestedVersionRef = useRef<string | null>(null);
+
+  // The version-switch dropdown resets to the default whenever the
+  // selected widget changes (see `defaultVersionFor`), unless a version
+  // came in with the URL.
   useEffect(() => {
-    setViewingVersion(
-      (selectedWidget && latestStableVersion(selectedWidget.availableVersions)) ??
-        selectedWidget?.installedVersion ??
-        null,
-    );
+    setViewingVersion(requestedVersionRef.current ?? defaultVersionFor(selectedWidget));
+    requestedVersionRef.current = null;
   }, [selectedWidget?.name]);
+
+  const handleNavigate = useCallback(
+    (next: Selection | null, nextVersion: string | null) => {
+      requestedVersionRef.current = nextVersion;
+      setSelection(next);
+      // Set here as well, not just in the effect above: moving between two
+      // versions of the *same* widget leaves its name unchanged, so the
+      // effect never runs.
+      const target = widgets?.find((widget) => widget.name === next?.widgetName) ?? null;
+      setViewingVersion(nextVersion ?? defaultVersionFor(target));
+    },
+    [widgets],
+  );
+
+  useHashRoute({
+    widgets,
+    selection,
+    version: viewingVersion,
+    defaultVersion: defaultVersionFor(selectedWidget),
+    onNavigate: handleNavigate,
+  });
 
   // `"local"` is a sentinel, not a real version — used only for widgets
   // registered under a local dev-server URL (`kind: "local"` in
