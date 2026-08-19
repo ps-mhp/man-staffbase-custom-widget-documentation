@@ -84,5 +84,6 @@ const externalBlockDefinition: ExternalBlockDefinition = {
 // name cannot be claimed twice.
 void startWidget({
   name: "custom-widget-documentation",
+  version: pkg.version,
   register: () => window.defineBlock(externalBlockDefinition),
 });
