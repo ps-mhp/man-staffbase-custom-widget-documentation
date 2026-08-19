@@ -196,4 +196,61 @@ describe("DocsApp", () => {
     const versionSelect = screen.getByLabelText("Version") as HTMLSelectElement;
     expect(versionSelect).toBeDisabled();
     expect(screen.getByText("Lokale Entwicklungsversion")).toBeInTheDocument();
-  });});
+  });
+
+  it("shows the actually-installed version as an option even when jsDelivr's separate version-listing metadata hasn't caught up to it yet", async () => {
+    // Reproduces the real scenario verbatim: a widget was just released and
+    // installed at 0.2.0-rc.1, but jsDelivr's package-metadata endpoint
+    // (`data.jsdelivr.com`, a cache independent from the CDN files
+    // themselves) still only lists the older 0.1.0-rc.* tags — it has not
+    // picked up the new release yet. The dropdown must still show the
+    // version that is actually running, not just what that lagging list
+    // happens to know about.
+    jest.spyOn(globalThis, "fetch").mockImplementation(async (input: RequestInfo | URL) => {
+      const url = input.toString();
+      if (url === "/api/widgets") {
+        return jsonResponse({
+          data: [
+            {
+              url: "https://cdn.jsdelivr.net/gh/ps-mhp/man-staffbase-content-tabs@0.2.0-rc.1/dist/content-tabs.js",
+            },
+          ],
+        });
+      }
+      if (url === "https://data.jsdelivr.com/v1/packages/gh/ps-mhp/man-staffbase-content-tabs") {
+        // Stale: does not yet mention 0.1.1 or 0.2.0-rc.1.
+        return jsonResponse({
+          versions: [
+            { version: "0.1.0-rc.5" },
+            { version: "0.1.0-rc.4" },
+            { version: "0.1.0-rc.3" },
+            { version: "0.1.0-rc.2" },
+            { version: "0.1.0-rc.1" },
+          ],
+        });
+      }
+      if (url.endsWith("/docs/manifest.json")) {
+        return jsonResponse({
+          title: "Content-Tabs",
+          summary: "Fasst benachbarte Spalten einer Section zu einer Tab-Gruppe zusammen.",
+          pages: [{ id: "overview", title: "Übersicht", file: "overview.md" }],
+        });
+      }
+      if (url.endsWith("overview.md")) {
+        return textResponse("# Übersicht\n\nContent-Tabs.");
+      }
+      throw new Error(`unexpected fetch: ${url}`);
+    });
+
+    render(<DocsApp />);
+
+    fireEvent.click(await screen.findByRole("button", { name: "Content-Tabs" }));
+    await screen.findByRole("heading", { name: "Übersicht" });
+
+    const versionSelect = await screen.findByLabelText("Version");
+    const optionValues = Array.from(versionSelect.querySelectorAll("option")).map((option) => option.value);
+
+    expect(optionValues).toContain("0.2.0-rc.1");
+    expect((versionSelect as HTMLSelectElement).value).toBe("0.2.0-rc.1");
+  });
+});

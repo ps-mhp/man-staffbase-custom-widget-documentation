@@ -252,12 +252,29 @@ export function DocsApp(): React.JSX.Element {
   // with a single release, or none at all yet (empty `availableVersions`)
   // — so the version-bar below never has to hide for lack of options; see
   // its own comment for why it must always be visible regardless.
-  const versionOptions =
-    selectedWidget && selectedWidget.availableVersions.length > 0
-      ? selectedWidget.availableVersions
-      : effectiveVersion
-        ? [effectiveVersion]
-        : [];
+  //
+  // Crucially, `selectedWidget.availableVersions` comes from jsDelivr's
+  // *separate* package-metadata endpoint (`fetchAvailableVersions`), which
+  // is independently cached and can lag well behind the CDN files
+  // themselves — a release that is already live and already installed
+  // (`installedVersion`, read straight from the host's own `/api/widgets`
+  // response) can be entirely absent from that metadata list for a while
+  // after release. If `effectiveVersion` (which prefers `installedVersion`)
+  // were left out just because the stale metadata list doesn't mention it
+  // yet, the `<select>`'s `value` would point at a version with no
+  // matching `<option>` — the browser then silently falls back to
+  // whatever option happens to be first, and the actually-installed
+  // version simply never appears in the dropdown at all. So it is always
+  // merged in, deduplicated, and put first — it is the version actually
+  // running right now, however new.
+  const versionOptions = useMemo(() => {
+    if (!selectedWidget) return [];
+    const known = selectedWidget.availableVersions;
+    if (effectiveVersion && !known.includes(effectiveVersion)) {
+      return [effectiveVersion, ...known];
+    }
+    return known.length > 0 ? known : effectiveVersion ? [effectiveVersion] : [];
+  }, [selectedWidget, effectiveVersion]);
 
   if (!widgets) {
     return <LoadingSurface label="Widgets werden gesucht …" />;
