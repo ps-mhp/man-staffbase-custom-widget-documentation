@@ -1,0 +1,21 @@
+{
+  "title": "documentation-sur-les-widgets-personnalisés",
+  "summary": "À faire : une phrase expliquant ce que ce widget apporte aux rédacteurs.",
+  "pages": [
+    {
+      "id": "overview",
+      "title": "Aperçu",
+      "file": "overview.md"
+    },
+    {
+      "id": "settings",
+      "title": "Paramètres",
+      "file": "settings.md"
+    },
+    {
+      "id": "faq",
+      "title": "FAQ",
+      "file": "faq.md"
+    }
+  ]
+}

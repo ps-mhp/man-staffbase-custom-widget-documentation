@@ -1,0 +1,21 @@
+{
+  "title": "documentatie-voor-aangepaste-widgets",
+  "summary": "TODO: Een zin waarin wordt uitgelegd wat deze widget voor redacteuren doet.",
+  "pages": [
+    {
+      "id": "overview",
+      "title": "Overzicht",
+      "file": "overview.md"
+    },
+    {
+      "id": "settings",
+      "title": "Instellingen",
+      "file": "settings.md"
+    },
+    {
+      "id": "faq",
+      "title": "Veelgestelde vragen",
+      "file": "faq.md"
+    }
+  ]
+}

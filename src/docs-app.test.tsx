@@ -58,6 +58,44 @@ function mockFetch(): void {
   });
 }
 
+/**
+ * Same as `mockFetch`, but the widget also has an older released version
+ * (`0.9.0`) whose docs manifest 404s — e.g. a tag cut before `/docs`
+ * existed — so tests can assert the error message shown for a version
+ * that fails to load, and that the version dropdown stays available to
+ * switch away from it.
+ */
+function mockFetchWithBrokenOldVersion(): void {
+  jest.spyOn(globalThis, "fetch").mockImplementation(async (input: RequestInfo | URL) => {
+    const url = input.toString();
+    if (url === "/api/widgets") {
+      return jsonResponse({
+        data: [
+          {
+            url: "https://cdn.jsdelivr.net/gh/ps-mhp/man-staffbase-podcast-display-widget@1.0.0/dist/podcast-display-widget.js",
+          },
+        ],
+      });
+    }
+    if (url === "https://data.jsdelivr.com/v1/packages/gh/ps-mhp/man-staffbase-podcast-display-widget") {
+      return jsonResponse({ versions: [{ version: "1.0.0" }, { version: "0.9.0" }] });
+    }
+    if (url.includes("@0.9.0")) {
+      return new Response(null, { status: 404 });
+    }
+    if (url.endsWith("/docs/manifest.json")) {
+      return jsonResponse(PODCAST_MANIFEST);
+    }
+    if (url.endsWith("overview.md")) {
+      return textResponse("# Übersicht\n\nZeigt Podcasts.");
+    }
+    if (url.endsWith("settings.md")) {
+      return textResponse("# Einstellungen\n\nStellt den Anzeigemodus ein.");
+    }
+    throw new Error(`unexpected fetch: ${url}`);
+  });
+}
+
 describe("DocsApp", () => {
   afterEach(() => {
     jest.restoreAllMocks();
@@ -93,4 +131,69 @@ describe("DocsApp", () => {
 
     expect(await screen.findByRole("button", { name: /Einstellungen/ })).toBeInTheDocument();
   });
-});
+
+  it("shows an error (not an endless loading state) when a picked docs version fails to load, and keeps the version selector usable", async () => {
+    mockFetchWithBrokenOldVersion();
+
+    render(<DocsApp />);
+
+    fireEvent.click(await screen.findByRole("button", { name: "Podcast-Anzeige" }));
+
+    const versionSelect = await screen.findByLabelText("Version");
+    fireEvent.change(versionSelect, { target: { value: "0.9.0" } });
+
+    expect(await screen.findByText("Dokumentation für Version 0.9.0 konnte nicht geladen werden.")).toBeInTheDocument();
+    // The selector itself must stay visible/usable so the editor can switch
+    // away from the broken version — it must not be hidden by the error.
+    expect(screen.getByLabelText("Version")).toBeInTheDocument();
+
+    fireEvent.change(screen.getByLabelText("Version"), { target: { value: "1.0.0" } });
+    expect(await screen.findByRole("heading", { name: "Übersicht" })).toBeInTheDocument();
+  });
+
+  it("always shows the version selector once a widget is picked, even with a single available release", async () => {
+    mockFetch();
+
+    render(<DocsApp />);
+
+    fireEvent.click(await screen.findByRole("button", { name: "Podcast-Anzeige" }));
+
+    // `mockFetch` only ever registers one version (1.0.0, no jsDelivr
+    // version-history lookup at all) — the selector must not hide just
+    // because there is nothing else to switch to.
+    expect(await screen.findByLabelText("Version")).toBeInTheDocument();
+  });
+
+  it("shows content (not an endless loading state) for a widget registered under a local dev-server URL, with a disabled version selector", async () => {
+    const localBundleUrl = "http://localhost:8080/podcast-display-widget/podcast-display-widget.js";
+    jest.spyOn(globalThis, "fetch").mockImplementation(async (input: RequestInfo | URL) => {
+      const url = input.toString();
+      if (url === "/api/widgets") {
+        return jsonResponse({ data: [{ url: localBundleUrl }] });
+      }
+      if (url.endsWith("/docs/manifest.json")) {
+        return jsonResponse(PODCAST_MANIFEST);
+      }
+      if (url.endsWith("overview.md")) {
+        return textResponse("# Übersicht\n\nZeigt Podcasts.");
+      }
+      if (url.endsWith("settings.md")) {
+        return textResponse("# Einstellungen\n\nStellt den Anzeigemodus ein.");
+      }
+      throw new Error(`unexpected fetch: ${url}`);
+    });
+
+    render(<DocsApp />);
+
+    fireEvent.click(await screen.findByRole("button", { name: "Podcast-Anzeige" }));
+
+    // Before the fix, a repo-less (local dev-server) widget never resolved
+    // a `location` at all, so it got stuck showing the loading skeleton
+    // forever. It must now render the actual page content...
+    expect(await screen.findByRole("heading", { name: "Übersicht" })).toBeInTheDocument();
+    // ...and the version selector must still be present (always visible),
+    // just disabled — there's genuinely only one place its docs come from.
+    const versionSelect = screen.getByLabelText("Version") as HTMLSelectElement;
+    expect(versionSelect).toBeDisabled();
+    expect(screen.getByText("Lokale Entwicklungsversion")).toBeInTheDocument();
+  });});

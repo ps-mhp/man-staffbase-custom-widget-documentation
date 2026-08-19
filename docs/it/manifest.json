@@ -1,0 +1,21 @@
+{
+  "title": "documentazione-widget-personalizzato",
+  "summary": "TODO: Una frase che spieghi a cosa serve questo widget per i redattori.",
+  "pages": [
+    {
+      "id": "overview",
+      "title": "Panoramica",
+      "file": "overview.md"
+    },
+    {
+      "id": "settings",
+      "title": "Impostazioni",
+      "file": "settings.md"
+    },
+    {
+      "id": "faq",
+      "title": "Domande frequenti",
+      "file": "faq.md"
+    }
+  ]
+}

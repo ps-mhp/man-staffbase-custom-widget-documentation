@@ -21,9 +21,17 @@
 
 // Unlike the light-DOM widgets (see `podcast-display-widget/src/styles.ts`'s
 // `ROOT_ID` comment), this widget renders inside its own open shadow root
-// (see `mount-shadow-app.ts`): the host page's CSS cannot reach in here and
-// this stylesheet cannot leak out, so plain class selectors are enough —
-// no id-compound-selector or `!important` fight is needed.
+// (see `mount-shadow-app.ts`): the host page's CSS cannot leak out of this
+// stylesheet. It DOES leak in, though — `mount-shadow-app.ts` deliberately
+// mirrors every `<style>`/stylesheet `<link>` from `document.head` (so a
+// live-example widget renders styled) plus the tenant's Custom CSS, and both
+// are mirrored *before* this stylesheet in DOM order (i.e. they lose ties on
+// equal specificity) but can still carry Staffbase's own default UI rules
+// (blue "active"/focus states, bare-element selectors, etc.) with either
+// higher specificity or `!important`. The nav's selected/hover states are
+// this widget's own MAN-CI signal (see `--active` below) and must not be
+// paintable by anything mirrored in, so they carry `!important` — everything
+// else here can stay a plain class selector.
 :host,
 .docs-app {
   box-sizing: border-box;
@@ -49,6 +57,68 @@
 
 .docs-app__status--error {
   color: man("error");
+}
+
+// --- Loading animation -----------------------------------------------
+
+// A full-area shimmering skeleton shown instead of a static "wird
+// geladen …" line — see `loading-surface.tsx`. Bar colours use only
+// neutral greys (never blue) per MAN-CI.
+.docs-app__loading {
+  display: flex;
+  flex-direction: column;
+  gap: man("space-3");
+  padding: man("space-1") 0;
+}
+
+.docs-app__loading-bar {
+  height: 14px;
+  border-radius: man("radius");
+  background: linear-gradient(90deg, man("grey-100") 25%, man("grey-200") 37%, man("grey-100") 63%);
+  background-size: 400% 100%;
+  animation: docs-app-loading-shimmer 1.4s ease-in-out infinite;
+
+  &--title {
+    height: 22px;
+    width: 40%;
+  }
+
+  &--short {
+    width: 55%;
+  }
+}
+
+@keyframes docs-app-loading-shimmer {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
+}
+
+// Motion-sensitive editors get the same skeleton layout without the
+// looping animation drawing their eye — content is still clearly a
+// loading placeholder from its shape alone.
+@media (prefers-reduced-motion: reduce) {
+  .docs-app__loading-bar {
+    animation: none;
+  }
+}
+
+// Visually hides the loading-status text from sighted users (the shimmer
+// already communicates "loading") while keeping it in the accessibility
+// tree for `role="status"` to announce.
+.docs-app__visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 // --- Sidebar -----------------------------------------------------------
@@ -131,8 +201,8 @@
   padding: man("space-2") man("space-3");
   margin: 1px 0;
   @include man-type("body-s");
-  color: man("text");
-  background: transparent;
+  color: man("text") !important;
+  background: transparent !important;
   // Buttons default to the browser/OS's native "push-button" chrome
   // (`-webkit-appearance: auto`) unless explicitly reset — WebKit in
   // particular then ignores `background`/`border` entirely and paints its
@@ -145,7 +215,7 @@
   cursor: pointer;
 
   &:hover {
-    background: man("grey-100");
+    background: man("grey-100") !important;
   }
 
   // Reset the browser default outline (Chromium/WebKit render it as a
@@ -155,17 +225,20 @@
   // navigation — matching what a sighted mouse user already sees via
   // `:hover`/`--active` without also flashing blue on every click.
   &:focus {
-    outline: none;
+    outline: none !important;
   }
 
   &:focus-visible {
-    box-shadow: man("focus");
+    box-shadow: man("focus") !important;
   }
 }
 
+// The MAN-CI selection colour (pink/red), not blue: this is the one state
+// mirrored/injected CSS (see the file-level comment above) must never be
+// allowed to repaint, so every declaration here carries `!important`.
 .docs-app__nav-button--active {
-  background: man("red-50");
-  color: man("red");
+  background: man("red-50") !important;
+  color: man("red") !important;
   font-weight: 600;
 }
 
@@ -292,6 +365,16 @@
 
   &:focus-visible {
     box-shadow: man("focus");
+  }
+
+  // A repo-less local dev-server widget has genuinely only one possible
+  // location for its docs — nothing to switch between — so its single
+  // option is shown disabled rather than as a clickable-but-pointless
+  // dropdown.
+  &:disabled {
+    color: man("text-muted");
+    background: man("surface-sunken");
+    cursor: default;
   }
 }
 

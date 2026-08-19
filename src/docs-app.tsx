@@ -20,6 +20,7 @@ import type { DocsManifest } from "@shared/docs/types";
 import { buildSearchIndex, querySearchIndex, SearchDoc, SearchHit } from "./search";
 import { MarkdownPage } from "./markdown-page";
 import { LiveExample } from "./live-example";
+import { LoadingSurface } from "./loading-surface";
 
 interface Selection {
   widgetName: string;
@@ -28,10 +29,21 @@ interface Selection {
 
 /**
  * The docs/examples URLs for whichever version of a widget's docs are
- * currently being viewed — either the installed version (the common case,
- * `widget.docsBaseUrl`/`widget.docsExamplesUrl` as discovered), or an
- * older release picked from the version dropdown, in which case these are
- * recomputed from the widget's repo for that specific tag.
+ * currently being viewed, and the bundle URL for its live example.
+ *
+ * These two concerns are independent and must not be conflated: docs/
+ * examples URLs should be reused from `widget` whenever the requested
+ * version matches `widget.docsVersion` (the version `discoverWidgetDocs`
+ * actually fetched — usually the newest *stable* release, not necessarily
+ * what's installed, see its doc comment) to avoid a redundant network
+ * round-trip; the *bundle* URL must instead only be reused from `widget`
+ * when the requested version matches `widget.installedVersion` — anything
+ * else recomputes a jsDelivr URL for that tag. Using the docs-preferred
+ * bundle here instead would try to load a second, differently-versioned
+ * bundle for the same custom-element tag name into `<LiveExample>`, which
+ * the browser's custom-element registry rejects outright (a tag name can
+ * only ever be `customElements.define`d once, no matter how many script
+ * tags claim to define it again).
  */
 interface VersionedDocsLocation {
   version: string;
@@ -41,64 +53,77 @@ interface VersionedDocsLocation {
 }
 
 function versionedLocationFor(widget: DiscoveredWidgetDocs, version: string): VersionedDocsLocation {
-  if (version === widget.installedVersion || !widget.repo) {
-    return {
-      version,
-      docsBaseUrl: widget.docsBaseUrl,
-      docsExamplesUrl: widget.docsExamplesUrl,
-      bundleUrl: widget.bundleUrl,
-    };
-  }
-  const parsed: ParsedBundleUrl = { kind: "jsdelivr", repo: widget.repo, version, name: widget.name };
+  const usesInstalledBundle = version === widget.installedVersion || !widget.repo;
+  const usesCachedDocs = version === widget.docsVersion || !widget.repo;
+  const parsed: ParsedBundleUrl | null =
+    widget.repo && !(usesInstalledBundle && usesCachedDocs) ? { kind: "jsdelivr", repo: widget.repo, version, name: widget.name } : null;
+
   return {
     version,
-    docsBaseUrl: docsBaseUrlFor(parsed),
-    docsExamplesUrl: docsExamplesUrlFor(parsed),
-    bundleUrl: `https://cdn.jsdelivr.net/gh/${widget.repo}@${version}/dist/${widget.name}.js`,
+    docsBaseUrl: usesCachedDocs ? widget.docsBaseUrl : docsBaseUrlFor(parsed!),
+    docsExamplesUrl: usesCachedDocs ? widget.docsExamplesUrl : docsExamplesUrlFor(parsed!),
+    bundleUrl: usesInstalledBundle ? widget.bundleUrl : `https://cdn.jsdelivr.net/gh/${widget.repo}@${version}/dist/${widget.name}.js`,
   };
 }
 
 /**
  * Fetches and caches the manifest for whichever version of a widget's docs
  * is currently selected. Reuses `widget.manifest` (already fetched by
- * `discoverWidgetDocs`) without a network round-trip when the selected
- * version is the installed one — which is the default and by far the most
- * common case — and only fetches an alternate manifest when the editor
- * actually picks a different version from the dropdown, since older
- * releases can have a different set of pages entirely.
+ * `discoverWidgetDocs`, for `widget.docsVersion`) without a network
+ * round-trip when the selected version matches that — which is the
+ * default and by far the most common case — and only fetches an alternate
+ * manifest when the editor actually picks a different version from the
+ * dropdown, since older releases can have a different set of pages
+ * entirely.
+ *
+ * Returns an explicit `error` flag alongside `manifest` so the caller can
+ * tell "still loading" (`manifest: null, error: false`) apart from "failed"
+ * (`manifest: null, error: true`) — a manifest that 404s (a tag predating
+ * `/docs`, a typo'd version, a deleted release) must not be shown as an
+ * indefinite loading spinner, the editor needs to be told it's actually
+ * broken.
  */
 function useVersionedManifest(
   widget: DiscoveredWidgetDocs | null,
   location: VersionedDocsLocation | null,
-): DocsManifest | null {
+): { manifest: DocsManifest | null; error: boolean } {
   const [manifest, setManifest] = useState<DocsManifest | null>(null);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     if (!widget || !location) {
       setManifest(null);
+      setError(false);
       return;
     }
-    if (location.version === widget.installedVersion || !widget.repo) {
+    if (location.version === widget.docsVersion || !widget.repo) {
       setManifest(widget.manifest);
+      setError(false);
       return;
     }
 
     let cancelled = false;
     setManifest(null);
+    setError(false);
     fetch(`${location.docsBaseUrl}/manifest.json`)
       .then((response) => (response.ok ? (response.json() as Promise<DocsManifest>) : null))
       .then((fetched) => {
-        if (!cancelled) setManifest(fetched);
+        if (cancelled) return;
+        setManifest(fetched);
+        if (!fetched) setError(true);
       })
       .catch(() => {
-        if (!cancelled) setManifest(null);
+        if (!cancelled) {
+          setManifest(null);
+          setError(true);
+        }
       });
     return () => {
       cancelled = true;
     };
   }, [widget, location]);
 
-  return manifest;
+  return { manifest, error };
 }
 
 export function DocsApp(): React.JSX.Element {
@@ -194,12 +219,25 @@ export function DocsApp(): React.JSX.Element {
     );
   }, [selectedWidget?.name]);
 
-  const effectiveVersion = viewingVersion ?? selectedWidget?.installedVersion ?? null;
+  // `"local"` is a sentinel, not a real version — used only for widgets
+  // registered under a local dev-server URL (`kind: "local"` in
+  // `discovery.ts`, `!widget.repo` here), which have no version concept
+  // at all (`installedVersion`/`docsVersion` are both `undefined`).
+  // Falling through to `null` there instead — as this used to — made
+  // `location` below permanently `null` for such a widget, and with it
+  // `useVersionedManifest` (which requires a `location`) never resolves:
+  // the widget got stuck on the loading state forever. `versionedLocationFor`
+  // already ignores the `version` argument entirely for repo-less widgets
+  // (see its doc comment), so the sentinel only ever surfaces cosmetically,
+  // in the version-bar's (disabled) label below.
+  const effectiveVersion = selectedWidget
+    ? viewingVersion ?? selectedWidget.installedVersion ?? selectedWidget.docsVersion ?? "local"
+    : null;
   const location = useMemo(
-    () => (selectedWidget && effectiveVersion ? versionedLocationFor(selectedWidget, effectiveVersion) : null),
+    () => (selectedWidget ? versionedLocationFor(selectedWidget, effectiveVersion ?? "local") : null),
     [selectedWidget, effectiveVersion],
   );
-  const versionedManifest = useVersionedManifest(selectedWidget, location);
+  const { manifest: versionedManifest, error: versionedManifestError } = useVersionedManifest(selectedWidget, location);
 
   const selectedPage = useMemo(
     () => versionedManifest?.pages.find((page) => page.id === selection?.pageId) ?? versionedManifest?.pages[0] ?? null,
@@ -210,9 +248,19 @@ export function DocsApp(): React.JSX.Element {
   const isViewingOutdatedVersion = Boolean(
     selectedWidget && latestVersion && effectiveVersion && effectiveVersion !== latestVersion,
   );
+  // Always at least one entry once a widget is selected — even a widget
+  // with a single release, or none at all yet (empty `availableVersions`)
+  // — so the version-bar below never has to hide for lack of options; see
+  // its own comment for why it must always be visible regardless.
+  const versionOptions =
+    selectedWidget && selectedWidget.availableVersions.length > 0
+      ? selectedWidget.availableVersions
+      : effectiveVersion
+        ? [effectiveVersion]
+        : [];
 
   if (!widgets) {
-    return <p className="docs-app__status">Widgets werden gesucht …</p>;
+    return <LoadingSurface label="Widgets werden gesucht …" />;
   }
 
   return (
@@ -322,7 +370,15 @@ export function DocsApp(): React.JSX.Element {
           </div>
         ) : (
           <div>
-            {selectedWidget.availableVersions.length > 1 && location && (
+            {location && (
+              // The version-switch UI must always be visible whenever a
+              // widget is selected — otherwise an editor stuck on a
+              // broken/loading version (see the error/loading branches
+              // below) has no way to switch away from it at all. It no
+              // longer hides for a single- or zero-version widget either
+              // (see `versionOptions`); a repo-less local dev-server
+              // widget instead gets a single disabled option, since there
+              // is genuinely only ever one place its docs can come from.
               <div className="docs-app__version-bar">
                 <label className="docs-app__version-label" htmlFor="docs-app-version-select">
                   Version
@@ -332,23 +388,28 @@ export function DocsApp(): React.JSX.Element {
                   className="docs-app__version-select"
                   value={location.version}
                   onChange={(event) => setViewingVersion(event.target.value)}
+                  disabled={!selectedWidget.repo}
                 >
-                  {selectedWidget.availableVersions.map((version) => {
-                    const isLatest = version === latestVersion;
-                    // Only call out "installed" when it differs from
-                    // "current" — if they're the same version, the
-                    // "(aktuell)" label alone already says everything;
-                    // showing both would just be noise.
-                    const isInstalled =
-                      version === selectedWidget.installedVersion && selectedWidget.installedVersion !== latestVersion;
-                    return (
-                      <option key={version} value={version}>
-                        {version}
-                        {isLatest ? " (aktuell)" : ""}
-                        {isInstalled ? " (installiert)" : ""}
-                      </option>
-                    );
-                  })}
+                  {selectedWidget.repo ? (
+                    versionOptions.map((version) => {
+                      const isLatest = version === latestVersion;
+                      // Only call out "installed" when it differs from
+                      // "current" — if they're the same version, the
+                      // "(aktuell)" label alone already says everything;
+                      // showing both would just be noise.
+                      const isInstalled =
+                        version === selectedWidget.installedVersion && selectedWidget.installedVersion !== latestVersion;
+                      return (
+                        <option key={version} value={version}>
+                          {version}
+                          {isLatest ? " (aktuell)" : ""}
+                          {isInstalled ? " (installiert)" : ""}
+                        </option>
+                      );
+                    })
+                  ) : (
+                    <option value={location.version}>Lokale Entwicklungsversion</option>
+                  )}
                 </select>
               </div>
             )}
@@ -365,8 +426,12 @@ export function DocsApp(): React.JSX.Element {
                 </button>
               </p>
             )}
-            {!versionedManifest || !location || !selectedPage ? (
-              <p className="docs-app__status">Dokumentation für Version {effectiveVersion} wird geladen …</p>
+            {versionedManifestError ? (
+              <p className="docs-app__status docs-app__status--error">
+                Dokumentation für Version {effectiveVersion} konnte nicht geladen werden.
+              </p>
+            ) : !versionedManifest || !location || !selectedPage ? (
+              <LoadingSurface label={`Dokumentation für Version ${effectiveVersion} wird geladen …`} />
             ) : (
               <>
                 <MarkdownPage url={`${location.docsBaseUrl}/${selectedPage.file}`} />

@@ -1,0 +1,21 @@
+{
+  "title": "dokumentacja-niestandardowego-widżetu",
+  "summary": "TODO: Jedno zdanie wyjaśniające, do czego służy ten widget dla redaktorów.",
+  "pages": [
+    {
+      "id": "overview",
+      "title": "Przegląd",
+      "file": "overview.md"
+    },
+    {
+      "id": "settings",
+      "title": "Ustawienia",
+      "file": "settings.md"
+    },
+    {
+      "id": "faq",
+      "title": "Najczęściej zadawane pytania",
+      "file": "faq.md"
+    }
+  ]
+}

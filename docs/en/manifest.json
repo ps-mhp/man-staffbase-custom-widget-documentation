@@ -1,0 +1,21 @@
+{
+  "title": "custom-widget-documentation",
+  "summary": "TODO: A sentence explaining what this widget does for editors.",
+  "pages": [
+    {
+      "id": "overview",
+      "title": "Overview",
+      "file": "overview.md"
+    },
+    {
+      "id": "settings",
+      "title": "Settings",
+      "file": "settings.md"
+    },
+    {
+      "id": "faq",
+      "title": "FAQ",
+      "file": "faq.md"
+    }
+  ]
+}
