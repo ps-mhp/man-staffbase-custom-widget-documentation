@@ -58,4 +58,39 @@ describe("LiveExample", () => {
     expect(await screen.findByText("Standard")).toBeInTheDocument();
     expect(screen.queryByText(/kein Live-Datensatz/i)).not.toBeInTheDocument();
   });
+
+  it("renders a group example as adjacent section columns, one widget instance per member", async () => {
+    // customElements.define("content-tabs", ...) is what the real bundle does
+    // on load; jsdom does not execute the appended <script>, so it is faked
+    // here directly, matching how the other tests unblock loadScriptOnce.
+    customElements.define("content-tabs", class extends HTMLElement {});
+
+    const { container } = render(
+      <LiveExample
+        widgetName="content-tabs"
+        bundleUrl="https://cdn.example/content-tabs.js"
+        docsExamplesUrl="https://cdn.example/content-tabs.docs-examples.js"
+        example={{
+          title: "Zwei Tabs",
+          attributes: { "tab-title": "Ankündigungen" },
+          members: [
+            { attributes: { "tab-title": "Ankündigungen" }, content: "Inhalt A" },
+            { attributes: { "tab-title": "Termine" }, content: "Inhalt B" },
+          ],
+        }}
+      />,
+    );
+
+    await screen.findByText("Zwei Tabs");
+    const script = document.querySelector('script[src="https://cdn.example/content-tabs.js"]');
+    script?.dispatchEvent(new Event("load"));
+
+    const columns = await screen.findAllByText(/Inhalt (A|B)/);
+    expect(columns).toHaveLength(2);
+
+    const section = container.querySelector(".ui-commons__section__wrapper");
+    expect(section).not.toBeNull();
+    expect(section?.querySelectorAll(".ui-commons__section__column")).toHaveLength(2);
+    expect(section?.querySelectorAll("content-tabs")).toHaveLength(2);
+  });
 });

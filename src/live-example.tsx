@@ -69,11 +69,48 @@ export function LiveExample({ widgetName, bundleUrl, docsExamplesUrl, example }:
         return;
       }
 
+      container.innerHTML = "";
+
+      const members = resolved!.members;
+      if (members) {
+        // A Staffbase-shaped section with one column per member — the DOM
+        // shape a grouping widget like content-tabs actually reacts to (see
+        // `DocsExampleMember`). A bare, single element never leaves its
+        // "configuration, not content" placeholder because there is nothing
+        // beside it to group with.
+        const section = document.createElement("div");
+        section.className = "ui-commons__section__wrapper";
+        section.style.display = "flex";
+        section.style.gap = "1rem";
+
+        for (const member of members) {
+          const column = document.createElement("div");
+          column.className = "ui-commons__section__column";
+          column.style.flex = "1 1 0%";
+
+          const element = document.createElement(widgetName);
+          for (const [key, value] of Object.entries(member.attributes)) {
+            element.setAttribute(key, value);
+          }
+          column.appendChild(element);
+
+          if (member.content) {
+            const content = document.createElement("p");
+            content.textContent = member.content;
+            column.appendChild(content);
+          }
+
+          section.appendChild(column);
+        }
+
+        container.appendChild(section);
+        return;
+      }
+
       const element = document.createElement(widgetName);
       for (const [key, value] of Object.entries(resolved!.attributes)) {
         element.setAttribute(key, value);
       }
-      container.innerHTML = "";
       container.appendChild(element);
     }
 
