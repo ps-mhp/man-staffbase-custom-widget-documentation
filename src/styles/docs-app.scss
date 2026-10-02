@@ -16,8 +16,11 @@
 // changes in one place (`man-theme/src/lib/_tokens.scss`) and this widget
 // picks it up the next time it compiles, and at runtime falls back to the
 // same value if the tenant hasn't loaded the MAN theme (preview, a
-// different tenant, no theme at all).
+// different tenant, no theme at all). The Craft component looks (focus
+// ring, input field) come from `@shared/stylings/man-craft`, the same
+// values as `man-theme/src/lib/_craft.scss`.
 @use "@shared/stylings/man-tokens" as *;
+@use "@shared/stylings/man-craft" as *;
 
 // Unlike the light-DOM widgets (see `podcast-display-widget/src/styles.ts`'s
 // `ROOT_ID` comment), this widget renders inside its own open shadow root
@@ -46,7 +49,9 @@
   display: flex;
   align-items: flex-start;
   gap: man("space-6");
-  @include man-type("body");
+  // UI text (Craft `body-m`, 16/1.5) — `body` is the 18px reading size,
+  // which only the Markdown page content below uses.
+  @include man-type("body-m");
 }
 
 .docs-app__status {
@@ -56,7 +61,7 @@
 }
 
 .docs-app__status--error {
-  color: man("error");
+  color: man("error-ink");
 }
 
 // --- Loading animation -----------------------------------------------
@@ -135,26 +140,16 @@
   border-radius: man("radius");
 }
 
+// The Craft input field (40px, 1px #5B6F85, focus ring) — see `man-input`.
 .docs-app__search {
-  box-sizing: border-box;
+  @include man-input;
   width: 100%;
-  padding: man("space-2") man("space-3");
   margin-bottom: man("space-2");
-  @include man-type("body-s");
-  color: man("text");
-  background: man("surface");
   // `type="search"` gets its own native chrome (rounded corners, a
   // built-in clear button) in WebKit unless reset — same class of bug as
   // the `<button>` appearance issue above.
   appearance: none;
   -webkit-appearance: none;
-  border: man("border-width") solid man("border");
-  border-radius: man("radius");
-
-  &:focus {
-    outline: none;
-    box-shadow: man("focus");
-  }
 }
 
 .docs-app__search-results {
@@ -172,7 +167,6 @@
 .docs-app__nav-heading {
   @include man-type("eyebrow");
   color: man("text-subtle");
-  text-transform: uppercase;
   margin: man("space-4") 0 man("space-1");
 }
 
@@ -218,33 +212,34 @@
     background: man("grey-100") !important;
   }
 
-  // Reset the browser default outline (Chromium/WebKit render it as a
-  // solid-looking blue ring on plain `:focus`, which a mouse click *does*
-  // trigger, unlike `:focus-visible`) unconditionally, then draw our own
-  // (subtler, token-based) focus ring only for keyboard/`:focus-visible`
-  // navigation — matching what a sighted mouse user already sees via
-  // `:hover`/`--active` without also flashing blue on every click.
+  // Reset the browser default outline (Chromium/WebKit render it on plain
+  // `:focus`, which a mouse click *does* trigger, unlike `:focus-visible`)
+  // unconditionally, then draw the Craft ring (2px #3875B2, 2px offset —
+  // `man-focus-ring`) only for keyboard/`:focus-visible` navigation — a
+  // sighted mouse user already sees `:hover`/`--active` and gets no ring
+  // flashing on every click.
   &:focus {
     outline: none !important;
   }
 
   &:focus-visible {
-    box-shadow: man("focus") !important;
+    @include man-focus-ring(true);
   }
 }
 
-// The MAN-CI selection colour (pink/red), not blue: this is the one state
-// mirrored/injected CSS (see the file-level comment above) must never be
-// allowed to repaint, so every declaration here carries `!important`.
+// Craft's accent selection, not blue: `red-50` is Craft
+// `surface-accent-subtle` (#FDE2E8), the surface of a selected chip or
+// pagination button. This is the one state mirrored/injected CSS (see the
+// file-level comment above) must never be allowed to repaint, so the colours
+// carry `!important`.
 .docs-app__nav-button--active {
   background: man("red-50") !important;
   color: man("red") !important;
-  font-weight: 600;
+  font-weight: man("weight-body-bold");
 }
 
 .docs-app__nav-button--top {
   @include man-type("label");
-  text-transform: uppercase;
   margin-bottom: man("space-2");
 }
 
@@ -308,6 +303,8 @@
   flex: 1 0 auto;
 }
 
+// A Craft link (`craft-link`, accent): Regular, underlined with a 4px
+// offset; hover darkens it and drops the underline, pressed darkens further.
 .docs-app__overview-card-link {
   align-self: flex-start;
   padding: man("space-1") 0;
@@ -318,11 +315,16 @@
   -webkit-appearance: none;
   border: none;
   cursor: pointer;
-  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 4px;
 
   &:hover {
     color: man("link-hover");
-    text-decoration: underline;
+    text-decoration: none;
+  }
+
+  &:active {
+    color: man("red-active");
   }
 
   &:focus {
@@ -330,7 +332,7 @@
   }
 
   &:focus-visible {
-    box-shadow: man("focus");
+    @include man-focus-ring;
   }
 }
 
@@ -343,54 +345,45 @@
   margin: 0 0 man("space-4");
 }
 
+// Craft field label: Condensed 700 14px in the text colour.
 .docs-app__version-label {
-  @include man-type("body-s");
-  color: man("text-muted");
+  @include man-type("label");
+  color: man("text");
 }
 
+// The Craft input field, incl. its disabled look (#E5E5E5, #AFAFAF) and
+// focus ring — see `man-input`.
 .docs-app__version-select {
-  @include man-type("body-s");
-  color: man("text");
-  background: man("surface");
+  @include man-input;
   appearance: none;
   -webkit-appearance: none;
-  padding: man("space-1") man("space-3");
-  border: man("border-width") solid man("border");
-  border-radius: man("radius");
   cursor: pointer;
-
-  &:focus {
-    outline: none;
-  }
-
-  &:focus-visible {
-    box-shadow: man("focus");
-  }
 
   // A repo-less local dev-server widget has genuinely only one possible
   // location for its docs — nothing to switch between — so its single
   // option is shown disabled rather than as a clickable-but-pointless
   // dropdown.
   &:disabled {
-    color: man("text-muted");
-    background: man("surface-sunken");
     cursor: default;
   }
 }
 
+// A Craft banner (warning): a flat yellow surface without border or radius,
+// 12px padding, body-s text in the banner's ink.
 .docs-app__version-warning {
   @include man-type("body-s");
   color: man("warning-ink");
-  background: rgba(255, 205, 0, 0.15);
-  border: man("border-width") solid man("warning");
+  background: man("warning");
   border-radius: man("radius");
   padding: man("space-3");
   margin: 0 0 man("space-4");
 }
 
+// Links inside a Craft banner take the banner's ink, Regular, underlined
+// with a 4px offset; hover drops the underline.
 .docs-app__version-warning-link {
   @include man-type("body-s");
-  color: man("link");
+  color: inherit;
   background: transparent;
   appearance: none;
   -webkit-appearance: none;
@@ -398,11 +391,11 @@
   padding: 0;
   margin: 0;
   cursor: pointer;
-  font-weight: 600;
   text-decoration: underline;
+  text-underline-offset: 4px;
 
   &:hover {
-    color: man("link-hover");
+    text-decoration: none;
   }
 
   &:focus {
@@ -410,7 +403,7 @@
   }
 
   &:focus-visible {
-    box-shadow: man("focus");
+    @include man-focus-ring;
   }
 }
 
@@ -435,6 +428,7 @@
     margin: man("space-5") 0 man("space-2");
   }
 
+  // Reading text, so the 18px Craft body (`body-l`) rather than UI text.
   p,
   li {
     @include man-type("body");
@@ -466,7 +460,7 @@
   th {
     background: man("surface-sunken");
     color: man("text");
-    font-weight: 600;
+    font-weight: man("weight-body-bold");
   }
 
   code {
@@ -489,7 +483,6 @@
 .docs-app__example-title {
   @include man-type("label");
   color: man("text-subtle");
-  text-transform: uppercase;
   margin: 0 0 man("space-3");
 }
 
