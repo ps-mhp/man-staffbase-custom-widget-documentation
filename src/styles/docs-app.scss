@@ -13,7 +13,7 @@
 
 // Colour, radius, spacing and type all come from the shared MAN tokens (see
 // `@shared/stylings/man-tokens`) instead of being retyped here — a value
-// changes in one place (`onetruck-css/src/tokens.scss`) and this widget
+// changes in one place (`man-theme/src/lib/_tokens.scss`) and this widget
 // picks it up the next time it compiles, and at runtime falls back to the
 // same value if the tenant hasn't loaded the MAN theme (preview, a
 // different tenant, no theme at all).
