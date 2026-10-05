@@ -41,4 +41,10 @@ describe("docs-app stylesheet (Craft)", () => {
   it("writes error text in the Craft error ink", () => {
     expect(css).toMatch(/\.docs-app__status--error \{\s*color: var\(--man-error-ink, #990000\);/);
   });
+
+  it("keeps the selected navigation entry readable (AA) on its pale red", () => {
+    // #E40045 on #FDE2E8 is only ~3.8:1; #AD0040 (`red-hover`) is ~5.9:1.
+    const active = /\.docs-app__nav-button--active\s*\{([^}]*)\}/.exec(css)?.[1] ?? "";
+    expect(active).toMatch(/color:\s*var\(--man-red-hover, #ad0040\)\s*!important/);
+  });
 });

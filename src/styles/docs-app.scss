@@ -229,12 +229,14 @@
 
 // Craft's accent selection, not blue: `red-50` is Craft
 // `surface-accent-subtle` (#FDE2E8), the surface of a selected chip or
-// pagination button. This is the one state mirrored/injected CSS (see the
-// file-level comment above) must never be allowed to repaint, so the colours
-// carry `!important`.
+// pagination button. The text is `red-hover` (#AD0040), not `red`: #E40045
+// on #FDE2E8 reaches only about 3.8:1, below WCAG AA at 12–14px; #AD0040
+// gets about 5.9:1 (Craft itself uses the darker #C20041 there). This is the
+// one state mirrored/injected CSS (see the file-level comment above) must
+// never be allowed to repaint, so the colours carry `!important`.
 .docs-app__nav-button--active {
   background: man("red-50") !important;
-  color: man("red") !important;
+  color: man("red-hover") !important;
   font-weight: man("weight-body-bold");
 }
 
