@@ -49,8 +49,8 @@
   display: flex;
   align-items: flex-start;
   gap: man("space-6");
-  // UI text (Craft `body-m`, 16/1.5) — `body` is the 18px reading size,
-  // which only the Markdown page content below uses.
+  // UI text (Craft `body-m`, 16/1.5); the Markdown page content below uses
+  // `body`, the base size — also 16px.
   @include man-type("body-m");
 }
 
@@ -430,7 +430,7 @@
     margin: man("space-5") 0 man("space-2");
   }
 
-  // Reading text, so the 18px Craft body (`body-l`) rather than UI text.
+  // Reading text in the base size (`body`, 16px).
   p,
   li {
     @include man-type("body");
