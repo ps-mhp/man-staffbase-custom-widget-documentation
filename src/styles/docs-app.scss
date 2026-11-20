@@ -22,23 +22,23 @@
 @use "@shared/stylings/man-tokens" as *;
 @use "@shared/stylings/man-craft" as *;
 
-// Unlike the light-DOM widgets (see `podcast-display-widget/src/styles.ts`'s
-// `ROOT_ID` comment), this widget renders inside its own open shadow root
-// (see `mount-shadow-app.ts`): the host page's CSS cannot leak out of this
-// stylesheet. It DOES leak in, though — `mount-shadow-app.ts` deliberately
-// mirrors every `<style>`/stylesheet `<link>` from `document.head` (so a
-// live-example widget renders styled) plus the tenant's Custom CSS, and both
-// are mirrored *before* this stylesheet in DOM order (i.e. they lose ties on
-// equal specificity) but can still carry Staffbase's own default UI rules
-// (blue "active"/focus states, bare-element selectors, etc.) with either
-// higher specificity or `!important`. The nav's selected/hover states are
-// this widget's own MAN-CI signal (see `--active` below) and must not be
-// paintable by anything mirrored in, so they carry `!important` — everything
-// else here can stay a plain class selector.
+// The reader renders inside its own open shadow root (see
+// `mount-shadow-app.ts`): nothing of the host page's CSS reaches it, only
+// the inherited MAN custom properties and the page's `@font-face` rules.
+// The nav's selected state keeps its `!important` anyway — custom-block.mjs
+// may put the block into yet another shadow root, and the Craft colours of
+// the selection must not depend on that.
 :host,
 .docs-app {
   box-sizing: border-box;
   color: man("text");
+}
+
+// The block sits in a page column of any width (a content-tabs tab, a narrow
+// side column). Its own width, not the window's, decides whether the
+// chapters stand beside the text or above it.
+[data-docs-app-mount] {
+  container-type: inline-size;
 }
 
 .docs-app * {
@@ -133,59 +133,20 @@
   flex-direction: column;
   gap: man("space-2");
   flex: 0 0 auto;
-  width: 260px;
-  padding: man("space-4");
+  width: 220px;
+  padding: man("space-3");
+  position: sticky;
+  top: man("space-4");
   background: man("surface-sunken");
   border: man("border-width") solid man("border");
   border-radius: man("radius");
 }
 
-// The Craft input field (40px, 1px #5B6F85, focus ring) — see `man-input`.
-.docs-app__search {
-  @include man-input;
-  width: 100%;
-  margin-bottom: man("space-2");
-  // `type="search"` gets its own native chrome (rounded corners, a
-  // built-in clear button) in WebKit unless reset — same class of bug as
-  // the `<button>` appearance issue above.
-  appearance: none;
-  -webkit-appearance: none;
-}
 
-.docs-app__search-results {
-  list-style: none;
-  margin: 0 0 man("space-3");
-  padding: 0;
-  border-bottom: man("border-width") solid man("border");
-  padding-bottom: man("space-3");
-}
-
-.docs-app__search-hit-widget {
-  color: man("text-subtle");
-}
-
-.docs-app__nav-heading {
-  @include man-type("eyebrow");
-  color: man("text-subtle");
-  margin: man("space-4") 0 man("space-1");
-}
-
-.docs-app__widget-list,
 .docs-app__page-list {
   list-style: none;
   margin: 0;
   padding: 0;
-}
-
-.docs-app__page-list {
-  // A plain `padding-left` alone reads as "slightly indented", not as "these
-  // pages belong to that widget" — a visible guide line ties the group
-  // together the way a real tree view would, and the extra indent plus
-  // smaller type make the nesting unambiguous even at a glance.
-  padding-left: man("space-4");
-  margin-left: man("space-2");
-  margin-top: 1px;
-  border-left: man("border-width") solid man("border");
 }
 
 .docs-app__nav-button {
@@ -240,173 +201,11 @@
   font-weight: man("weight-body-bold");
 }
 
-.docs-app__nav-button--top {
-  @include man-type("label");
-  margin-bottom: man("space-2");
-}
-
-.docs-app__nav-button--page {
-  @include man-type("caption");
-}
-
 // --- Content -------------------------------------------------------------
 
 .docs-app__content {
   flex: 1 1 auto;
   min-width: 0;
-}
-
-.docs-app__title {
-  @include man-type("h1");
-  color: man("text");
-  margin: 0 0 man("space-5");
-}
-
-.docs-app__overview-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: man("space-4");
-}
-
-.docs-app__overview-card {
-  display: flex;
-  flex-direction: column;
-  gap: man("space-2");
-  padding: man("space-4");
-  background: man("surface");
-  border: man("border-width") solid man("border");
-  border-radius: man("radius");
-}
-
-.docs-app__overview-card-icon {
-  width: 28px;
-  height: 28px;
-  object-fit: contain;
-}
-
-.docs-app__overview-card-body {
-  display: flex;
-  flex-direction: column;
-  gap: man("space-1");
-}
-
-.docs-app__overview-card-title {
-  @include man-type("h4");
-  color: man("text");
-}
-
-.docs-app__overview-card-summary {
-  @include man-type("body-s");
-  color: man("text-muted");
-  margin: 0 0 man("space-2");
-  flex: 1 0 auto;
-}
-
-// A Craft link (`craft-link`, accent): Regular, underlined with a 4px
-// offset; hover darkens it and drops the underline, pressed darkens further.
-.docs-app__overview-card-link {
-  align-self: flex-start;
-  padding: man("space-1") 0;
-  @include man-type("body-s");
-  color: man("link");
-  background: transparent;
-  appearance: none;
-  -webkit-appearance: none;
-  border: none;
-  cursor: pointer;
-  text-decoration: underline;
-  text-underline-offset: 4px;
-
-  &:hover {
-    color: man("link-hover");
-    text-decoration: none;
-  }
-
-  &:active {
-    color: man("red-active");
-  }
-
-  &:focus {
-    outline: none;
-  }
-
-  &:focus-visible {
-    @include man-focus-ring;
-  }
-}
-
-// --- Version switcher ----------------------------------------------------
-
-.docs-app__version-bar {
-  display: flex;
-  align-items: center;
-  gap: man("space-2");
-  margin: 0 0 man("space-4");
-}
-
-// Craft field label: Condensed 700 14px in the text colour.
-.docs-app__version-label {
-  @include man-type("label");
-  color: man("text");
-}
-
-// The Craft input field, incl. its disabled look (#E5E5E5, #AFAFAF) and
-// focus ring — see `man-input`.
-.docs-app__version-select {
-  @include man-input;
-  appearance: none;
-  -webkit-appearance: none;
-  cursor: pointer;
-
-  // A repo-less local dev-server widget has genuinely only one possible
-  // location for its docs — nothing to switch between — so its single
-  // option is shown disabled rather than as a clickable-but-pointless
-  // dropdown.
-  &:disabled {
-    cursor: default;
-  }
-}
-
-// A Craft banner (warning): a flat yellow surface without border or radius,
-// 12px padding, body-s text in the banner's ink.
-.docs-app__version-warning {
-  @include man-type("body-s");
-  color: man("warning-ink");
-  background: man("warning");
-  border-radius: man("radius");
-  padding: man("space-3");
-  margin: 0 0 man("space-4");
-}
-
-// Links inside a Craft banner take the banner's ink, Regular, underlined
-// with a 4px offset; hover drops the underline.
-.docs-app__version-warning-link {
-  @include man-type("body-s");
-  color: inherit;
-  background: transparent;
-  appearance: none;
-  -webkit-appearance: none;
-  border: none;
-  padding: 0;
-  margin: 0;
-  cursor: pointer;
-  text-decoration: underline;
-  text-underline-offset: 4px;
-
-  &:hover {
-    text-decoration: none;
-  }
-
-  &:focus {
-    outline: none;
-  }
-
-  &:focus-visible {
-    @include man-focus-ring;
-  }
 }
 
 // --- Markdown page content ----------------------------------------------
@@ -472,31 +271,67 @@
   }
 }
 
-// --- Live example ----------------------------------------------------------
+// --- Changelog -------------------------------------------------------------
 
-.docs-app__example {
-  margin-top: man("space-5");
-  padding: man("space-4");
-  background: man("surface");
-  border: man("border-width") solid man("border");
-  border-radius: man("radius");
+.docs-app__changelog-version {
+  border-bottom: man("border-width") solid man("border");
+  padding: man("space-3") 0;
+
+  summary {
+    @include man-type("body");
+    cursor: pointer;
+    color: man("text");
+
+    &:focus {
+      outline: none;
+    }
+
+    &:focus-visible {
+      @include man-focus-ring;
+    }
+  }
+
+  ul {
+    margin: man("space-2") 0 0;
+  }
 }
 
-.docs-app__example-title {
-  @include man-type("label");
-  color: man("text-subtle");
-  margin: 0 0 man("space-3");
+.docs-app__changelog-date {
+  color: man("text-muted");
 }
 
-.docs-app__example-embed {
-  min-height: 40px;
-}
+// --- Version line ----------------------------------------------------------
 
-.docs-app__example-attributes {
+.docs-app__version {
   @include man-type("caption");
   color: man("text-muted");
-  background: man("surface-sunken");
-  border-radius: man("radius");
-  padding: man("space-3");
-  overflow-x: auto;
+  margin: man("space-6") 0 0;
+  padding-top: man("space-3");
+  border-top: man("border-width") solid man("border");
+}
+
+// --- Narrow -----------------------------------------------------------------
+
+// Below 640px the chapters wrap above the text as a row of buttons; the
+// sidebar loses its fixed width and its stickiness.
+@container (max-width: 640px) {
+  .docs-app {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .docs-app__sidebar {
+    position: static;
+    width: auto;
+  }
+
+  .docs-app__page-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: man("space-1");
+  }
+
+  .docs-app__nav-button {
+    width: auto;
+  }
 }

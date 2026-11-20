@@ -15,14 +15,38 @@ import { UiSchema } from "@rjsf/utils";
 import { JSONSchema7 } from "json-schema";
 
 /**
- * Schema for the widget's configuration dialog.
+ * Welches Widget der Block dokumentiert: sein Name, etwa `hero-slider-widget`.
+ * Mit Präfix, weil Editoren anderer Widgets sich über `root_<attribut>` in
+ * den Dialog hängen, ohne das Widget zu kennen. Gewählt wird im Fenster
+ * „Widget wählen“ (`docs-dialog.tsx`); docs-page.mjs setzt es beim Schreiben
+ * der Doku-Seiten.
+ */
+export const WIDGET_ATTRIBUTE = "docs-widget";
+
+/**
  * @see https://rjsf-team.github.io/react-jsonschema-form/docs/
  */
 export const configurationSchema: JSONSchema7 = {
-  properties: {},
+  properties: {
+    [WIDGET_ATTRIBUTE]: {
+      type: "string",
+      title: "Widget",
+      default: "",
+    },
+  },
 };
 
 /**
  * @see https://rjsf-team.github.io/react-jsonschema-form/docs/api-reference/uiSchema
  */
-export const uiSchema: UiSchema = {};
+export const uiSchema: UiSchema = {
+  [WIDGET_ATTRIBUTE]: {
+    "ui:help": "Das Widget wird im Fenster „Widget wählen“ ausgesucht; das Textfeld dahinter ist die Rohfassung.",
+  },
+};
+
+/** `" hero-slider-widget "` → `hero-slider-widget`; leer oder ungültig → `null`. */
+export function readWidgetName(raw: unknown): string | null {
+  const name = typeof raw === "string" ? raw.trim() : "";
+  return /^[a-z0-9-]+$/.test(name) ? name : null;
+}

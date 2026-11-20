@@ -21,15 +21,17 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 
 import { BlockFactory, BlockDefinition, ExternalBlockDefinition, BaseBlock } from "widget-sdk";
-import { configurationSchema, uiSchema } from "./configuration-schema";
-import { DocsApp } from "./docs-app";
+import { documentLocales } from "@shared/staffbase/posts";
+import { configurationSchema, readWidgetName, uiSchema, WIDGET_ATTRIBUTE } from "./configuration-schema";
+import { startDocsDialog } from "./docs-dialog";
+import { DocsReader } from "./reader";
 import { mountShadowApp } from "./mount-shadow-app";
 import docsAppCss from "./styles/docs-app.scss";
 import icon from "../resources/custom-widget-documentation.svg";
 import pkg from "../package.json";
 
-/** No configuration: the widget discovers everything it renders at runtime. */
-const widgetAttributes: string[] = [];
+/** Welches Widget der Block dokumentiert; siehe `configuration-schema.ts`. */
+const widgetAttributes: string[] = [WIDGET_ATTRIBUTE];
 
 const factory: BlockFactory = (BaseBlockClass, _widgetApi) => {
   return class CustomWidgetDocumentationBlock extends BaseBlockClass implements BaseBlock {
@@ -42,7 +44,8 @@ const factory: BlockFactory = (BaseBlockClass, _widgetApi) => {
       // block, and mountShadowApp is idempotent, so the root itself is only
       // created once too.
       this._root ??= ReactDOM.createRoot(mountPoint);
-      this._root.render(<DocsApp />);
+      const widgetName = readWidgetName(this.parseAttributes<Record<string, unknown>>()[WIDGET_ATTRIBUTE]);
+      this._root.render(<DocsReader widgetName={widgetName} locales={documentLocales()} />);
     }
 
     public unmountBlock(_container: HTMLElement): void {
@@ -85,5 +88,8 @@ const externalBlockDefinition: ExternalBlockDefinition = {
 void startWidget({
   name: "custom-widget-documentation",
   version: pkg.version,
-  register: () => window.defineBlock(externalBlockDefinition),
+  register: () => {
+    startDocsDialog();
+    window.defineBlock(externalBlockDefinition);
+  },
 });
