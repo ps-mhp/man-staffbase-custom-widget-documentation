@@ -1,26 +1,29 @@
 # Widget-Dokumentation
 
-Dieses Widget erzeugt die Seite, auf der Sie gerade lesen: eine
-Nachschlageseite für **alle** in dieser Staffbase-Umgebung installierten
-Widgets — mit Beschreibung, Einstellungen, Anleitungen und FAQ.
+Dieses Widget zeigt die Dokumentation **eines** Widgets direkt auf einer
+Staffbase-Seite: Beschreibung, Schritt-für-Schritt-Anleitung, Einstellungen,
+FAQ und die Änderungen der letzten Versionen.
 
-Es ist als **interne Hilfeseite für Redakteur:innen** gedacht: einmal
-angelegt, hält sie sich selbst aktuell.
+Es ist der Leseteil der Doku-Seiten unter „Custom Widgets“ — dort steht es im
+Tab **Mehr zum Widget**. Sie können es aber auf jede Seite setzen, etwa neben
+eine Anleitung für Ihr Team.
 
-## Was Sie darin finden
+## Was Leser:innen sehen
 
-- Links eine **Suche** und die Liste aller installierten Widgets. Ein Klick
-  auf ein Widget klappt seine Seiten auf (Übersicht, Schritt für Schritt,
-  Einstellungen, FAQ).
-- Rechts der Inhalt der gewählten Seite. Ohne Auswahl erscheint die
-  **Übersicht der Widgets** mit einer Kachel je Widget.
-- Bei manchen Widgets ein **Live-Beispiel**: das echte Widget mit echten Daten
-  direkt in der Doku.
+- Links die **Kapitel** des Widgets, rechts das gewählte Kapitel. Auf
+  schmalen Spalten stehen die Kapitel als Reihe über dem Text.
+- Das erste Kapitel ist beim Öffnen gewählt. Verweise im Text auf ein anderes
+  Kapitel wechseln direkt dorthin.
+- Unter **Änderungen** die Neuerungen und Korrekturen der letzten Versionen.
+- Ganz unten, welche Version des Widgets beschrieben ist.
 
-## Warum die Seite immer aktuell ist
+## Warum die Doku immer aktuell ist
 
-Das Widget schaut selbst nach, welche Widgets installiert sind, und lädt deren
-Dokumentation zur jeweiligen Version nach. Es gibt also nichts zu pflegen:
-Kommt ein Widget dazu oder wird eines aktualisiert, erscheint die passende
-Doku von allein. Umgekehrt gilt: Was hier steht, kommt aus dem jeweiligen
-Widget — es lässt sich auf dieser Seite nicht bearbeiten.
+Die Texte kommen aus dem Widget selbst, im Stand seines letzten Releases. Es
+gibt also nichts zu pflegen: Wird das Widget aktualisiert, ist es seine Doku
+auch. Umgekehrt lässt sich hier nichts bearbeiten.
+
+## Sprache
+
+Leser:innen sehen die Doku in ihrer Sprache, sofern das Widget eine
+Übersetzung mitbringt — sonst auf Deutsch.

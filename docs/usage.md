@@ -1,20 +1,22 @@
 # Schritt für Schritt
 
-## Hilfeseite anlegen
+## Doku eines Widgets auf eine Seite setzen
 
-1. Eine neue Seite anlegen, z. B. „Widget-Hilfe“, und sie der Redaktion als
-   Zielgruppe zuweisen.
-2. Das Widget **Widget-Dokumentation** auf der Seite platzieren.
-3. Nichts weiter einstellen — das Widget hat keine Einstellungen.
-4. Speichern und veröffentlichen.
+1. Die Seite im Studio öffnen und den Block **Widget-Dokumentation** einfügen.
+2. Im Fenster **Widget wählen** bei **Widget** das gewünschte Widget
+   aussuchen. Darunter stehen Symbol und Kurzbeschreibung zur Kontrolle.
+3. **Übernehmen**, dann die Seite speichern und veröffentlichen.
 
-Empfehlung: die Seite über die **volle Breite** laufen lassen und keine
-weiteren Widgets daneben setzen. Die Doku bringt eine eigene Navigation mit
-und braucht Platz.
+Das Fenster öffnet sich später über **Widget wählen** im Dialog des Blocks
+wieder.
 
-## Etwas nachschlagen
+## Platz einplanen
 
-1. Links im Suchfeld **Suchen …** einen Begriff eintippen; gesucht wird in
-   allen Seitentiteln und Texten aller Widgets.
-2. Auf einen Treffer klicken — in Klammern steht, zu welchem Widget er gehört.
-3. Alternativ links das Widget anklicken und dann die gewünschte Seite wählen.
+Die Doku bringt eine eigene Kapitelnavigation mit. Am besten liest sie sich
+in einer breiten Spalte; in einer schmalen rücken die Kapitel über den Text.
+
+## Doku-Seiten unter „Custom Widgets“
+
+Diese Seiten entstehen beim Release eines Widgets automatisch: oben die
+Bühne, darunter zwei Tabs — **Beispiele** mit echten Blöcken auf der Seite
+und **Mehr zum Widget** mit diesem Widget. Von Hand ist dort nichts zu tun.

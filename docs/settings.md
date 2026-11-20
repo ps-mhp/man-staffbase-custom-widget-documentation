@@ -1,13 +1,14 @@
 # Einstellungen
 
-Dieses Widget hat **keine Einstellungen**. Es genügt, es auf einer Seite zu
-platzieren; Inhalt und Navigation ergeben sich vollständig aus den
-installierten Widgets.
-
-## Was Sie stattdessen steuern
-
-| Punkt | Beschreibung |
+| Einstellung | Beschreibung |
 | --- | --- |
-| Zielgruppe | Ergibt sich aus der Seite, nicht aus dem Widget. Sinnvoll ist eine Seite für Redakteur:innen. |
-| Platzierung | Am besten über die volle Seitenbreite. Sidebar und Inhalt brauchen Raum. |
-| Umfang | Nicht steuerbar: Es erscheinen immer alle installierten Widgets, die eine Dokumentation mitbringen. |
+| **Widget** | Pflichtfeld. Das Widget, dessen Dokumentation der Block zeigt. Zur Auswahl stehen alle Widgets, die in dieser Umgebung installiert sind; Widgets ohne Doku sind markiert. |
+
+Alles andere ergibt sich aus dem gewählten Widget:
+
+| Punkt | Woher |
+| --- | --- |
+| Kapitel | Aus der Doku des Widgets, in deren Reihenfolge, dazu **Änderungen**. |
+| Stand | Der letzte Release des Widgets. Eine ältere Version lässt sich nicht wählen. |
+| Sprache | Die Sprache der Leser:innen, sonst Deutsch. |
+| Zielgruppe | Aus der Seite, nicht aus dem Widget. |

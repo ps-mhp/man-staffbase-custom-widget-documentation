@@ -1,6 +1,6 @@
 {
   "title": "Widget-Dokumentation",
-  "summary": "Erzeugt eine durchsuchbare Hilfeseite mit der Dokumentation aller installierten Widgets.",
+  "summary": "Zeigt die Dokumentation eines Widgets auf einer Seite — mit Kapiteln, Änderungen und immer im Stand seines letzten Releases.",
   "pages": [
     {
       "id": "overview",
