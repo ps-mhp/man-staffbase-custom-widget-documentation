@@ -1,6 +1,6 @@
 {
   "title": "Documentatie over widgets",
-  "summary": "Maakt een doorzoekbare help-pagina aan met de documentatie van alle geïnstalleerde widgets.",
+  "summary": "Toont de documentatie van een widget op een pagina — met hoofdstukken, wijzigingen en altijd in de stand van de laatste release.",
   "pages": [
     {
       "id": "overview",

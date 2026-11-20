@@ -1,53 +1,33 @@
-# FAQ
+# Często zadawane pytania
 
-**Pytanie:** Na liście brakuje jakiegoś widżetu.
+**Pytanie:** Wyświetla się komunikat „Nie wybrano widżetu”.
 
-Odpowiedź: Wyświetlane są tylko te widżety, które są zainstalowane w tym środowisku
-**i** zawierają dokumentację. W przypadku nowo opublikowanych wersji
-może minąć chwilę, zanim dokumentacja będzie dostępna w sieci dystrybucyjnej.
-Spróbuj załadować stronę ponownie później.
+Odpowiedź: W bloku nie ustawiono jeszcze żadnego widżetu. W Studio otwórz okno dialogowe
+bloku i wybierz widżet w sekcji **Wybierz widżet**.
 
-**Pytanie:** Wyświetla się komunikat „Wyszukiwanie widżetów…” i nic się nie dzieje.
+**Pytanie:** Wyświetla się komunikat, że widget nie jest zainstalowany w tym środowisku.
 
-Odpowiedź: Trwa ładowanie listy zainstalowanych widżetów. Jeśli komunikat
-utrzymuje się przez dłuższy czas, najczęściej wynika to z problemów z połączeniem internetowym lub z blokadą w przeglądarce;
-należy odświeżyć stronę i spróbować ponownie.
+Odpowiedź: Blok wyświetla tylko te widgety, które są zarejestrowane w tym środowisku Staffbase.
+Jeśli jest on zainstalowany gdzie indziej (na przykład tylko na „truck”, a nie na
+„van”), blok pozostanie tutaj pusty.
 
-**Pytanie:** Pojawia się komunikat „Nie udało się załadować tej strony” lub
-„Nie udało się załadować dokumentacji dla wersji X”.
+**Pytanie:** Wyświetla się komunikat: „Dla tego widżetu nie ma jeszcze dokumentacji”.
 
-Odpowiedź: Dokumentacja dla tej konkretnej wersji jest niedostępna — zazwyczaj jest to
-bardzo nowa lub bardzo stara wersja. Zazwyczaj pomaga ponowna próba
-później; w przeciwnym razie wybierz inną stronę z listy widżetów.
+Odpowiedź: Widżet nie zawiera (jeszcze) dokumentacji. Zostanie ona udostępniona w
+późniejszej wersji.
 
-**Pytanie:** Na górze pojawia się komunikat, że nie widzę najnowszej wersji.
+**Pytanie:** Brakuje rozdziału „Zmiany”.
 
-Odpowiedź: Zainstalowana wersja jest starsza niż najnowsza dostępna. Przycisk
-**Przejdź do aktualnej wersji** wyświetla nowszą dokumentację —
-uwaga: może ona opisywać funkcje, których w zainstalowanej wersji
-jeszcze nie ma.
+Odpowiedź: Lista zmian powstaje wraz z wydaniem. Widżety, które od czasu
+przejścia na nowy system nie miały jeszcze żadnego wydania, wyświetlają ten rozdział dopiero po nim.
 
-**Pytanie:** Wyszukiwanie nie zwraca żadnych wyników.
+**Pytanie:** Czy mogę edytować tutaj teksty lub dodawać własne uwagi?
 
-Odpowiedź: Wyszukiwanie odbywa się w tytułach stron i tekście bieżącym załadowanych
-dokumentacji; puste pole wyszukiwania nie zwraca żadnych wyników, a wyświetla się
-maksymalnie dziesięć wyników. Spróbuj ponownie wyszukać, używając krótszego, bardziej ogólnego hasła
-.
+Odpowiedź: Nie w tym bloku. Teksty należą do widżetu i pojawiają się wraz z
+jego wydaniem. Własne uwagi należy umieścić w osobnej sekcji strony.
 
-**Pytanie:** Przy przykładzie widnieje komunikat: „Dla tego przykładu nie ma obecnie
-dostępnego zestawu danych na żywo”.
+**Pytanie:** Dlaczego dokumentacja wyświetla się w języku niemieckim, mimo że mój język jest
+inny?
 
-Odpowiedź: To nie jest błąd. Dla tego widżetu nie udało się właśnie załadować prawdziwego przykładu
-— na przykład dlatego, że nie ma odpowiedniej treści lub nie jest ona dla Ciebie
-widoczna. Zamiast tego wyświetlane są wartości przykładowe.
-
-**Pytanie:** Czy mogę edytować teksty w tym miejscu lub dodawać własne uwagi?
-
-Odpowiedź: Nie na tej stronie. Teksty należą do danego widżetu i
-są dostarczane wraz z jego wersją. Własne uzupełnienia należy umieścić na osobnej stronie
-lub w elemencie tekstowym obok tego widżetu.
-
-**Pytanie:** W jakim języku wyświetlana jest dokumentacja?
-
-Odpowiedź: W języku, w którym dany widget jest dostarczany wraz z daną wersją.
-Jeśli brakuje wersji w danym języku, wyświetlana jest dostępna wersja.
+Odpowiedź: Widżet nie zawiera tłumaczenia na Twój język. W takim przypadku
+wyświetlana jest wersja niemiecka.

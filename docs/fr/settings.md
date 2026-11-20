@@ -1,13 +1,14 @@
 # Paramètres
 
-Ce widget ne dispose **d'aucun paramètre**. Il suffit de le placer sur une page
-; le contenu et la navigation découlent entièrement des
-widgets installés.
-
-## Ce que vous pouvez contrôler à la place
-
-| Élément | Description |
+| Paramètre | Description |
 | --- | --- |
-| Public cible | Déterminé par la page, et non par le widget. Une page destinée aux rédacteurs est un bon choix. |
-| Emplacement | De préférence sur toute la largeur de la page. La barre latérale et le contenu ont besoin d’espace. |
-| Contenu | Non configurable : tous les widgets installés qui comportent une documentation s’affichent systématiquement. |
+| **Widget** | Champ obligatoire. Le widget dont la documentation est affichée dans le bloc. Vous pouvez choisir parmi tous les widgets installés dans cet environnement ; les widgets sans documentation sont signalés. |
+
+Tout le reste dépend du widget sélectionné :
+
+| Élément | Origine |
+| --- | --- |
+| Chapitre | Issu de la documentation du widget, dans l'ordre indiqué, voir **Modifications**. |
+| Version | Dernière version du widget. Il n’est pas possible de sélectionner une version antérieure. |
+| Langue | Langue des lecteurs ; par défaut, l’allemand. |
+| Public cible | Tiré de la page, et non du widget. |

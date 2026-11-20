@@ -1,53 +1,33 @@
-# Perguntas frequentes
+# Perguntas Frequentes
 
-**Pergunta:** Falta um widget na lista.
+**Pergunta:** Aparece a mensagem «Nenhum widget selecionado».
 
-Resposta: Apenas são apresentados os widgets que estão instalados neste ambiente
-**e** que incluem documentação. As versões recém-publicadas
-demoram ainda algum tempo até que a documentação fique disponível na rede de distribuição.
-Carregue novamente mais tarde.
+Resposta: Ainda não foi definido nenhum widget no bloco. No Studio, abra a caixa de diálogo do
+bloco e, em **Selecionar widget**, escolha um.
 
-**Pergunta:** Aparece «A procurar widgets…» e nada acontece.
+**Pergunta:** Aparece a mensagem de que o widget não está instalado neste ambiente.
 
-Resposta: A lista de widgets instalados está a ser carregada. Se esta mensagem
-permanecer no ecrã, a causa é geralmente a ligação à Internet ou um bloqueador no navegador;
-recarregue a página e tente novamente.
+Resposta: O bloco mostra apenas os widgets que estão registados neste ambiente do Staffbase.
+Se estiver instalado noutro local (por exemplo, apenas no «truck», mas não no
+«van»), o bloco permanecerá vazio aqui.
 
-**Pergunta:** Aparece «Não foi possível carregar esta página.» ou
-«Não foi possível carregar a documentação para a versão X.»
+**Pergunta:** Aparece a mensagem «Ainda não existe documentação para este widget.»
 
-Resposta: A documentação para essa versão específica não está disponível — geralmente trata-se de uma
-versão muito recente ou muito antiga. Tentar mais tarde costuma resolver o
-problema; caso contrário, selecione outra página através da lista de widgets.
+Resposta: O widget (ainda) não inclui documentação. Esta será disponibilizada numa
+versão posterior.
 
-**Pergunta:** Aparece na parte superior que não estou a ver a versão mais recente.
+**Pergunta:** Falta o capítulo «Alterações».
 
-Resposta: A versão instalada é mais antiga do que a mais recente disponível. O
-botão **Mudar para a versão atual** mostra a documentação mais recente —
-Atenção: esta pode descrever funcionalidades que ainda não estão
-disponíveis na sua versão instalada.
-
-**Pergunta:** A pesquisa não encontra nada.
-
-Resposta: A pesquisa é efetuada nos títulos das páginas e no texto corrido das
-documentações carregadas; um campo de pesquisa vazio não apresenta resultados e são
-exibidos, no máximo, dez resultados. Volte a pesquisar com um termo mais curto e
-geral.
-
-**Pergunta:** Num exemplo, aparece «Para este exemplo, não está atualmente disponível
-nenhum conjunto de dados em tempo real.»
-
-Resposta: Não é um erro. Para este widget, não foi possível carregar nenhum exemplo real
-neste momento — talvez porque não exista conteúdo adequado ou porque este não esteja
-visível para si. Em vez disso, são apresentados os valores de exemplo.
+Resposta: A lista de alterações é criada aquando do lançamento. Os widgets que, desde
+a transição, ainda não tiveram um lançamento, só apresentam esse capítulo posteriormente.
 
 **Pergunta:** Posso editar os textos aqui ou adicionar notas próprias?
 
-Resposta: Não nesta página. Os textos pertencem ao respetivo widget e
-vêm incluídos na respetiva versão. As adições próprias devem ser colocadas numa página separada
-ou num elemento de texto ao lado deste widget.
+Resposta: Não neste bloco. Os textos pertencem ao widget e são fornecidos com
+o respetivo lançamento. As notas próprias devem ser colocadas numa secção separada da página.
 
-**Pergunta:** Em que idioma é apresentada a documentação?
+**Pergunta:** Por que razão vejo a documentação em alemão, apesar de a minha língua ser
+outra?
 
-Resposta: No idioma em que o respetivo widget é fornecido com a sua versão.
-Se faltar uma versão linguística, é apresentada a que estiver disponível.
+Resposta: O widget não inclui uma tradução para a sua língua. Nesse caso,
+aparece a versão em alemão.

@@ -1,6 +1,6 @@
 {
   "title": "Dokumentacja widżetów",
-  "summary": "Tworzy stronę pomocy z funkcją wyszukiwania, zawierającą dokumentację wszystkich zainstalowanych widżetów.",
+  "summary": "Przedstawia dokumentację widżetu na stronie — wraz z rozdziałami, zmianami i zawsze w wersji zgodnej z najnowszym wydaniem.",
   "pages": [
     {
       "id": "overview",

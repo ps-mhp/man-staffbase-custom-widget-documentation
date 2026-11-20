@@ -1,26 +1,29 @@
 # Widget-documentatie
 
-Deze widget genereert de pagina die u op dit moment leest: een
-overzichtspagina voor **alle** widgets die in deze Staffbase-omgeving zijn geïnstalleerd
-— met beschrijvingen, instellingen, handleidingen en veelgestelde vragen.
+Deze widget toont de documentatie van **een** widget rechtstreeks op een
+Staffbase-pagina: beschrijving, stapsgewijze handleiding, instellingen,
+veelgestelde vragen en de wijzigingen in de laatste versies.
 
-Het is bedoeld als **interne helppagina voor redacteuren**: eenmaal
-aangemaakt, blijft het vanzelf up-to-date.
+Het is het leesgedeelte van de documentatiepagina’s onder „Aangepaste widgets“ — daar staat het in het
+tabblad **Meer over de widget**. U kunt het echter op elke pagina plaatsen, bijvoorbeeld naast
+een handleiding voor uw team.
 
-## Wat u erin vindt
+## Wat lezers zien
 
-- Links een **zoekfunctie** en de lijst met alle geïnstalleerde widgets. Een klik
-  op een widget opent de bijbehorende pagina's (overzicht, stap voor stap,
-  instellingen, veelgestelde vragen).
-- Rechts de inhoud van de geselecteerde pagina. Zonder selectie verschijnt het
-  **overzicht van de widgets** met één tegel per widget.
-- Bij sommige widgets een **live voorbeeld**: de echte widget met echte gegevens
-  direct in de documentatie.
+- Links de **hoofdstukken** van de widget, rechts het geselecteerde hoofdstuk. Bij
+  smalle kolommen staan de hoofdstukken als rij boven de tekst.
+- Het eerste hoofdstuk is bij het openen geselecteerd. Verwijzingen in de tekst naar een ander
+  hoofdstuk gaan direct daarheen.
+- Onder **Wijzigingen** staan de vernieuwingen en correcties van de laatste versies.
+- Helemaal onderaan staat welke versie van de widget wordt beschreven.
 
-## Waarom de pagina altijd up-to-date is
+## Waarom de documentatie altijd up-to-date is
 
-De widget controleert zelf welke widgets zijn geïnstalleerd en laadt de
-documentatie voor de betreffende versie. Er hoeft dus niets te worden bijgewerkt:
-als er een widget bijkomt of als er een wordt bijgewerkt, verschijnt de bijbehorende
-documentatie vanzelf. Omgekeerd geldt: wat hier staat, komt uit de betreffende
-widget — het kan op deze pagina niet worden bewerkt.
+De teksten komen uit de widget zelf, in de stand van de laatste release. Er
+is dus niets te onderhouden: als de widget wordt bijgewerkt, is de documentatie
+dat ook. Omgekeerd kan hier niets worden bewerkt.
+
+## Taal
+
+Lezers zien de documentatie in hun eigen taal, mits de widget een
+vertaling bevat — anders in het Duits.

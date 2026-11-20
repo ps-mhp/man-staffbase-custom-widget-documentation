@@ -1,6 +1,6 @@
 {
   "title": "Documentación sobre widgets",
-  "summary": "Crea una página de ayuda con función de búsqueda que incluye la documentación de todos los widgets instalados.",
+  "summary": "Muestra la documentación de un widget en una página, con capítulos, cambios y siempre actualizada a la última versión.",
   "pages": [
     {
       "id": "overview",

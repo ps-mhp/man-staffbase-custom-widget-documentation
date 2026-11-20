@@ -1,26 +1,29 @@
 # Documentação do widget
 
-Este widget gera a página que está a ler neste momento: uma
-página de referência para **todos os** widgets instalados neste ambiente do Staffbase
-— com descrição, definições, instruções e perguntas frequentes.
+Este widget apresenta a documentação **de um** widget diretamente numa
+página do Staffbase: descrição, guia passo a passo, definições,
+perguntas frequentes e as alterações das últimas versões.
 
-Foi concebido como uma **página de ajuda interna para editores**: uma vez
-criada, mantém-se atualizada automaticamente.
+Trata-se da secção de leitura das páginas de documentação em «Widgets personalizados» — onde se encontra no
+separador **Mais sobre o widget**. No entanto, pode colocá-lo em qualquer página, por exemplo, ao lado
+de um guia para a sua equipa.
 
-## O que encontrará aqui
+## O que os leitores veem
 
-- À esquerda, uma **barra de pesquisa** e a lista de todos os widgets instalados. Um clique
-  num widget abre as respetivas páginas (Visão geral, Passo a passo,
-  Configurações, Perguntas frequentes).
-- À direita, o conteúdo da página selecionada. Sem seleção, aparece a
-  **Visão geral dos widgets** com um mosaico por widget.
-- Em alguns widgets, um **exemplo ao vivo**: o widget real com dados reais
-  diretamente na documentação.
+- À esquerda, os **capítulos** do widget; à direita, o capítulo selecionado. Em
+  colunas estreitas, os capítulos aparecem em fila acima do texto.
+- O primeiro capítulo é selecionado ao abrir o widget. As referências no texto a outro
+  capítulo levam diretamente para lá.
+- Em **Alterações**, as novidades e correções das últimas versões.
+- Na parte inferior, qual a versão do widget que está a ser descrita.
 
-## Por que é que a página está sempre atualizada
+## Por que razão a documentação está sempre atualizada
 
-O próprio widget verifica quais os widgets que estão instalados e carrega a respetiva
-documentação para a versão em questão. Portanto, não há nada para atualizar:
-se for adicionado um widget ou se algum for atualizado, a documentação
-correspondente aparece automaticamente. Por outro lado, o que aqui se encontra provém do respetivo
-widget — não pode ser editado nesta página.
+Os textos provêm do próprio widget, na versão da sua última atualização. Portanto,
+não há nada para atualizar: se o widget for atualizado, a sua documentação
+também o é. Por outro lado, nada pode ser editado aqui.
+
+## Idioma
+
+Os leitores e leitoras veem a documentação no seu idioma, desde que o widget inclua uma
+tradução — caso contrário, em alemão.

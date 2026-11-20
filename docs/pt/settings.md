@@ -1,13 +1,14 @@
 # Configurações
 
-Este widget **não tem configurações**. Basta colocá-lo numa página;
-o conteúdo e a navegação resultam inteiramente dos
-widgets instalados.
-
-## O que pode controlar
-
-| Ponto | Descrição |
+| Configuração | Descrição |
 | --- | --- |
-| Público-alvo | Depende da página, não do widget. Faz sentido criar uma página para os editores. |
-| Posicionamento | De preferência em toda a largura da página. A barra lateral e o conteúdo precisam de espaço. |
-| Extensão | Não controlável: aparecem sempre todos os widgets instalados que incluam documentação. |
+| **Widget** | Campo obrigatório. O widget cuja documentação é apresentada no bloco. Estão disponíveis todos os widgets instalados neste ambiente; os widgets sem documentação estão assinalados. |
+
+Tudo o resto decorre do widget selecionado:
+
+| Item | Origem |
+| --- | --- |
+| Capítulo | Da documentação do widget, na ordem apresentada, incluindo **alterações**. |
+| Versão | A última versão do widget. Não é possível selecionar uma versão mais antiga. |
+| Idioma | O idioma dos leitores; caso contrário, alemão. |
+| Público-alvo | Retirado da página, não do widget. |

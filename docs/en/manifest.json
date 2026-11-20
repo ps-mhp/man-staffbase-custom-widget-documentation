@@ -1,6 +1,6 @@
 {
   "title": "Widget Documentation",
-  "summary": "Creates a searchable help page containing documentation for all installed widgets.",
+  "summary": "Displays the documentation for a widget on a page—including chapters, changes, and always showing the status of its latest release.",
   "pages": [
     {
       "id": "overview",

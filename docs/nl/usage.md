@@ -1,20 +1,21 @@
 # Stap voor stap
 
-## Een helppagina aanmaken
+## Documentatie van een widget op een pagina plaatsen
 
-1. Maak een nieuwe pagina aan, bijvoorbeeld „Widget-help“, en wijs deze toe aan de redactie als
-   doelgroep.
-2. Plaats de widget **Widget-documentatie** op de pagina.
-3. Verder niets instellen — de widget heeft geen instellingen.
-4. Opslaan en publiceren.
+1. Open de pagina in Studio en voeg het blok **Widget-documentatie** in.
+2. Selecteer in het venster **Widget kiezen** bij **Widget** de gewenste widget
+  . Daaronder staan het symbool en een korte beschrijving ter controle.
+3. Klik op **Toepassen**, sla vervolgens de pagina op en publiceer deze.
 
-Aanbeveling: laat de pagina over de **volledige breedte** lopen en plaats geen
-andere widgets ernaast. De documentatie heeft een eigen navigatie
-en heeft ruimte nodig.
+Het venster kan later weer worden geopend via **Widget selecteren** in het dialoogvenster van het blok.
 
-## Iets opzoeken
+## Ruimte inplannen
 
-1. Typ links in het zoekveld **Zoeken …** een term in; er wordt gezocht in
-   alle paginatitels en teksten van alle widgets.
-2. Klik op een treffer — tussen haakjes staat bij welke widget deze hoort.
-3. Je kunt ook links op de widget klikken en vervolgens de gewenste pagina selecteren.
+De documentatie heeft een eigen hoofdstuknavigatie. Deze leest het beste
+in een brede kolom; in een smalle kolom overlappen de hoofdstukken de tekst.
+
+## Documentatiepagina’s onder „Aangepaste widgets“
+
+Deze pagina’s worden automatisch aangemaakt bij de release van een widget: bovenaan het
+podium, daaronder twee tabbladen — **Voorbeelden** met echte blokken op de pagina
+en **Meer over de widget** met deze widget. Je hoeft daar niets handmatig te doen.

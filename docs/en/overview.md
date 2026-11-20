@@ -1,26 +1,29 @@
 # Widget Documentation
 
-This widget generates the page you’re currently reading: a
-reference page for **all** widgets installed in this Staffbase environment
-— complete with descriptions, settings, instructions, and FAQs.
+This widget displays the documentation for **a** widget directly on a
+Staffbase page: description, step-by-step instructions, settings,
+FAQ, and changes from recent versions.
 
-It is intended as an **internal help page for editors**: once
-created, it updates itself automatically.
+It’s the reading section of the documentation pages under “Custom Widgets”—you’ll find it in the
+**More About the Widget** tab. However, you can place it on any page, such as next to
+a guide for your team.
 
-## What You’ll Find Here
+## What Readers See
 
-- On the left, a **search** bar and a list of all installed widgets. Clicking
-  on a widget opens its pages (Overview, Step-by-Step,
-  Settings, FAQ).
-- On the right, the content of the selected page. If nothing is selected, the
-  **widget overview** appears, with one tile per widget.
-- For some widgets, a **live example**: the actual widget with real data
-  displayed directly in the documentation.
+- On the left are the widget’s **chapters**; on the right is the selected chapter. In
+  narrow columns, the chapters appear as a row above the text.
+- The first chapter is selected when the widget opens. Links in the text to another
+  chapter jump directly to that chapter.
+- Under **Changes**, you’ll find the updates and corrections from the latest versions.
+- At the very bottom, you’ll see which version of the widget is described.
 
-## Why the page is always up to date
+## Why the documentation is always up to date
 
-The widget checks for itself which widgets are installed and loads their
-documentation for the respective version. So there’s nothing to maintain:
-If a widget is added or updated, the corresponding
-documentation appears automatically. Conversely, what appears here comes directly from the respective
-widget—it cannot be edited on this page.
+The text comes from the widget itself, as of its latest release. So
+there’s nothing to maintain: When the widget is updated, so is its documentation
+. Conversely, nothing here can be edited.
+
+## Language
+
+Readers see the documentation in their language, provided the widget includes a
+translation—otherwise, it appears in German.

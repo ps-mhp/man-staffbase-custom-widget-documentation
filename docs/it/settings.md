@@ -1,13 +1,14 @@
 # Impostazioni
 
-Questo widget **non ha impostazioni**. È sufficiente inserirlo in una pagina
-; il contenuto e la navigazione derivano interamente dai
-widget installati.
-
-## Cosa è invece possibile controllare
-
-| Voce | Descrizione |
+| Impostazione | Descrizione |
 | --- | --- |
-| Destinatari | Dipende dalla pagina, non dal widget. È consigliabile una pagina dedicata ai redattori. |
-| Posizionamento | Preferibilmente a tutta larghezza della pagina. La barra laterale e il contenuto richiedono spazio. |
-| Contenuto | Non modificabile: vengono sempre visualizzati tutti i widget installati che dispongono di una documentazione. |
+| **Widget** | Campo obbligatorio. Il widget di cui il blocco mostra la documentazione. È possibile scegliere tra tutti i widget installati in questo ambiente; i widget privi di documentazione sono contrassegnati. |
+
+Tutto il resto dipende dal widget selezionato:
+
+| Voce | Da dove |
+| --- | --- |
+| Capitolo | Dalla documentazione del widget, nell’ordine indicato, con **modifiche**. |
+| Versione | L’ultima versione del widget. Non è possibile selezionare una versione precedente. |
+| Lingua | La lingua dei lettori; in caso contrario, tedesco. |
+| Destinatari | Tratta dalla pagina, non dal widget. |

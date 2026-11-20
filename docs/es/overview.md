@@ -1,26 +1,29 @@
 # Documentación del widget
 
-Este widget genera la página que estás leyendo ahora mismo: una
-página de referencia para **todos** los widgets instalados en este entorno de Staffbase,
-con descripciones, ajustes, instrucciones y preguntas frecuentes.
+Este widget muestra la documentación **de un** widget directamente en una
+página de Staffbase: descripción, instrucciones paso a paso, configuración,
+preguntas frecuentes y los cambios de las últimas versiones.
 
-Está concebida como una **página de ayuda interna para los editores**: una vez
-creada, se mantiene actualizada automáticamente.
+Es la sección de lectura de las páginas de documentación en «Widgets personalizados»; allí se encuentra en la
+pestaña **Más sobre el widget**. No obstante, puedes colocarlo en cualquier página, por ejemplo, junto a
+unas instrucciones para tu equipo.
 
-## Qué encontrarás en ella
+## Lo que ven los lectores
 
-- A la izquierda, un **buscador** y la lista de todos los widgets instalados. Al hacer clic
-  en un widget, se abren sus secciones (resumen, paso a paso,
-  configuración, preguntas frecuentes).
-- A la derecha, el contenido de la página seleccionada. Si no se selecciona nada, aparece el
-  **resumen de los widgets** con un mosaico por cada widget.
-- En algunos widgets, un **ejemplo en directo**: el widget real con datos reales
-  directamente en la documentación.
+- A la izquierda, los **capítulos** del widget; a la derecha, el capítulo seleccionado. En
+  columnas estrechas, los capítulos aparecen en fila sobre el texto.
+- Al abrirlo, el primer capítulo aparece seleccionado. Las referencias en el texto a otro
+  capítulo llevan directamente a él.
+- En **Cambios**, las novedades y correcciones de las últimas versiones.
+- Justo al final, qué versión del widget se describe.
 
-## Por qué la página está siempre actualizada
+## Por qué la documentación está siempre actualizada
 
-El propio widget comprueba qué widgets están instalados y carga su
-documentación correspondiente a cada versión. Por lo tanto, no hay que mantener nada:
-si se añade un widget o se actualiza uno, la documentación correspondiente
-aparece por sí sola. A la inversa, lo que aparece aquí procede del
-widget correspondiente; no se puede editar en esta página.
+Los textos proceden del propio widget, en el estado de su última versión. Por lo tanto,
+no hay nada que mantener: si se actualiza el widget, su documentación
+también lo está. Por el contrario, aquí no se puede editar nada.
+
+## Idioma
+
+Los lectores y lectoras ven la documentación en su idioma, siempre que el widget
+incluya una traducción; de lo contrario, aparece en alemán.

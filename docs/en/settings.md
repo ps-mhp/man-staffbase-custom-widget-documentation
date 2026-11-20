@@ -1,13 +1,14 @@
 # Settings
 
-This widget has **no settings**. Simply place it on a page;
-the content and navigation are determined entirely by the
-installed widgets.
-
-## What You Can Control Instead
-
-| Item | Description |
+| Setting | Description |
 | --- | --- |
-| Target Audience | Determined by the page, not the widget. A page for editors makes sense. |
-| Placement | Best placed across the full page width. The sidebar and content need space. |
-| Scope | Cannot be controlled: All installed widgets that include documentation will always appear. |
+| **Widget** | Required field. The widget whose documentation the block displays. You can choose from all widgets installed in this environment; widgets without documentation are marked. |
+
+Everything else is determined by the selected widget:
+
+| Item | Source |
+| --- | --- |
+| Chapter | From the widget’s documentation, in the order listed there, plus **changes**. |
+| Version | The latest release of the widget. An older version cannot be selected. |
+| Language | The reader’s language; otherwise, German. |
+| Target Audience | From the page, not from the widget. |

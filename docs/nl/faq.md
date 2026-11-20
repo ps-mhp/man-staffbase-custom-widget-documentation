@@ -1,53 +1,33 @@
 # Veelgestelde vragen
 
-**Vraag:** Er ontbreekt een widget in de lijst.
+**Vraag:** Er staat „Geen widget geselecteerd“.
 
-Antwoord: Er worden alleen widgets weergegeven die in deze omgeving zijn geïnstalleerd
-**en** die documentatie bevatten. Bij pas uitgebrachte versies
-duurt het bovendien even voordat de documentatie via het distributienetwerk
-beschikbaar is. Probeer het later nog eens.
+Antwoord: Er is nog geen widget ingesteld in het blok. Open in Studio het dialoogvenster van het
+blok en selecteer er een onder **Widget selecteren**.
 
-**Vraag:** Er staat „Widgets worden gezocht …“ en er gebeurt niets.
+**Vraag:** Er staat dat de widget niet in deze omgeving is geïnstalleerd.
 
-Antwoord: De lijst met geïnstalleerde widgets wordt momenteel geladen. Als dit
-blijft hangen, ligt het meestal aan het netwerk of aan een blokkering in de browser;
-laad de pagina opnieuw en probeer het nog eens.
+Antwoord: Het blok toont alleen widgets die in deze Staffbase-omgeving
+zijn geregistreerd. Als deze ergens anders is geïnstalleerd (bijvoorbeeld alleen op ‘truck’, niet op
+‘van’), blijft het blok hier leeg.
 
-**Vraag:** Er verschijnt „Deze pagina kon niet worden geladen.“ of
-„Documentatie voor versie X kon niet worden geladen.“
+**Vraag:** Er staat: „Er is nog geen documentatie voor deze widget.“
 
-Antwoord: De documentatie is voor precies deze versie niet beschikbaar — meestal een
-zeer nieuwe of een zeer oude versie. Het helpt meestal om het later nog eens te
-proberen; anders kunt u via de widgetlijst een andere pagina kiezen.
+Antwoord: De widget bevat (nog) geen documentatie. Deze wordt meegeleverd bij een
+latere release.
 
-**Vraag:** Bovenaan staat dat ik niet de meest recente versie zie.
+**Vraag:** Het hoofdstuk „Wijzigingen“ ontbreekt.
 
-Antwoord: De geïnstalleerde versie is ouder dan de nieuwste beschikbare versie. De
-knop **Overschakelen naar de huidige versie** toont de nieuwere documentatie —
-let op: deze kan functies beschrijven die in uw geïnstalleerde versie
-nog ontbreken.
-
-**Vraag:** De zoekfunctie vindt niets.
-
-Antwoord: Er wordt gezocht in paginatitels en de lopende tekst van de geladen
-documentatie; een leeg zoekveld levert geen resultaten op, en er worden
-maximaal tien resultaten weergegeven. Zoek opnieuw met een kortere, algemenere term
-.
-
-**Vraag:** Bij een voorbeeld staat „Voor dit voorbeeld is momenteel geen
-live-dataset beschikbaar.“
-
-Antwoord: Dit is geen fout. Voor deze widget kon op dit moment geen echt voorbeeld
-worden geladen — bijvoorbeeld omdat er geen passende inhoud is of omdat deze voor u niet
-zichtbaar is. In plaats daarvan worden de voorbeeldwaarden weergegeven.
+Antwoord: De lijst met wijzigingen wordt bij de release samengesteld. Widgets die sinds
+de overstap nog geen release hebben gehad, tonen dit hoofdstuk pas daarna.
 
 **Vraag:** Kan ik de teksten hier bewerken of eigen opmerkingen toevoegen?
 
-Antwoord: Niet op deze pagina. De teksten behoren bij de betreffende widget en
-worden meegeleverd met de versie ervan. Eigen aanvullingen horen thuis op een aparte pagina
-of in een tekstelement naast deze widget.
+Antwoord: Niet in dit blok. De teksten horen bij de widget en worden meegeleverd
+bij de release ervan. Eigen opmerkingen horen thuis in een apart gedeelte van de pagina.
 
-**Vraag:** In welke taal wordt de documentatie weergegeven?
+**Vraag:** Waarom zie ik de documentatie in het Duits, terwijl mijn taal een
+andere is?
 
-Antwoord: In de taal waarin de betreffende widget met zijn versie
-wordt geleverd. Als er geen taalversie ontbreekt, wordt de beschikbare versie weergegeven.
+Antwoord: De widget bevat geen vertaling voor uw taal. Dan
+verschijnt de Duitse versie.

@@ -1,20 +1,21 @@
 # Paso a paso
 
-## Crear una página de ayuda
+## Insertar la documentación de un widget en una página
 
-1. Crea una nueva página, por ejemplo, «Ayuda sobre widgets», y asígnala al equipo editorial como
-   público objetivo.
-2. Coloca el widget **Documentación del widget** en la página.
-3. No es necesario configurar nada más: el widget no tiene opciones de configuración.
-4. Guardar y publicar.
+1. Abre la página en Studio e inserta el bloque **Documentación del widget**.
+2. En la ventana **Seleccionar widget**, en el campo **Widget**, selecciona el widget
+   que desees. Debajo aparecerán el icono y una breve descripción para que puedas comprobarlo.
+3. Haz clic en **Aplicar**, guarda la página y publícala.
 
-Recomendación: deja que la página ocupe el **ancho completo** y no
-coloques más widgets a su lado. La documentación incluye su propia navegación
-y necesita espacio.
+La ventana se volverá a abrir más tarde a través de **Seleccionar widget** en el cuadro de diálogo del bloque.
 
-## Buscar algo
+## Prever espacio
 
-1. Escribe un término en el campo de búsqueda de la izquierda **Buscar…**; la búsqueda se realiza en
-   todos los títulos de las páginas y en los textos de todos los widgets.
-2. Haz clic en un resultado: entre paréntesis se indica a qué widget pertenece.
-3. Como alternativa, haz clic en el widget de la izquierda y, a continuación, selecciona la página deseada.
+La documentación incluye su propia navegación por capítulos. Se lee mejor
+en una columna ancha; en una estrecha, los capítulos se superponen al texto.
+
+## Páginas de documentación en «Widgets personalizados»
+
+Estas páginas se crean automáticamente al publicar un widget: arriba, el
+escenario; debajo, dos pestañas: **Ejemplos** con bloques reales en la página
+y **Más sobre el widget** con este widget. No hay que hacer nada manualmente allí.

@@ -1,13 +1,14 @@
 # Ustawienia
 
-Ten widget nie ma **żadnych ustawień**. Wystarczy umieścić go na stronie;
-treść i nawigacja wynikają w całości z
-zainstalowanych widgetów.
-
-## Co można natomiast kontrolować
-
-| Punkt | Opis |
+| Ustawienie | Opis |
 | --- | --- |
-| Grupa docelowa | Wynika ze strony, a nie z widżetu. Sensowne jest utworzenie strony dla redaktorów. |
-| Umiejscowienie | Najlepiej na całej szerokości strony. Pasek boczny i treść wymagają miejsca. |
-| Zakres | Nie można kontrolować: zawsze wyświetlane są wszystkie zainstalowane widżety, które posiadają dokumentację. |
+| **Widżet** | Pole obowiązkowe. Widżet, którego dokumentację wyświetla blok. Do wyboru są wszystkie widżety zainstalowane w tym środowisku; widżety bez dokumentacji są zaznaczone. |
+
+Wszystko inne wynika z wybranego widżetu:
+
+| Pozycja | Źródło |
+| --- | --- |
+| Rozdział | Z dokumentacji widżetu, w kolejności podanej w dokumentacji, wraz z **zmianami**. |
+| Stan | Najnowsza wersja widgetu. Nie można wybrać starszej wersji. |
+| Język | Język czytelników; w przeciwnym razie niemiecki. |
+| Grupa docelowa | Z strony, a nie z widgetu. |

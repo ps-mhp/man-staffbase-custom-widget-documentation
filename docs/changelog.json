@@ -1,0 +1,82 @@
+{
+  "versions": [
+    {
+      "version": "0.6.0-rc.1",
+      "date": "2026-11-20",
+      "entries": [
+        {
+          "type": "feat",
+          "text": "Reader für die Doku eines Widgets"
+        }
+      ]
+    },
+    {
+      "version": "0.5.0-rc.3",
+      "date": "2026-10-05",
+      "entries": [
+        {
+          "type": "feat",
+          "text": "Seitenstyles nach Craft (MAN Design System)"
+        },
+        {
+          "type": "fix",
+          "text": "Gewaehlter Navigationspunkt lesbar nach WCAG AA"
+        }
+      ]
+    },
+    {
+      "version": "0.0.0",
+      "date": "2026-08-19",
+      "entries": [
+        {
+          "type": "feat",
+          "text": "mount the docs app into a shadow root"
+        },
+        {
+          "type": "feat",
+          "text": "assemble the documentation app layout with search and navigation"
+        },
+        {
+          "type": "feat",
+          "text": "embed live widget examples in the documentation widget"
+        },
+        {
+          "type": "feat",
+          "text": "render a single docs markdown page"
+        },
+        {
+          "type": "feat",
+          "text": "add Orama-based search index over docs pages"
+        },
+        {
+          "type": "feat",
+          "text": "scaffold custom-widget-documentation widget"
+        },
+        {
+          "type": "fix",
+          "text": "reset :focus outline everywhere, default to latest stable docs, show installed-version badge"
+        },
+        {
+          "type": "fix",
+          "text": "reset native button/select appearance, inline MAN-CI branding CSS, fix nav hierarchy"
+        },
+        {
+          "type": "fix",
+          "text": "guard version-switch content against a null selected page"
+        },
+        {
+          "type": "fix",
+          "text": "mirror widget-injected head styles into the docs app's shadow root"
+        },
+        {
+          "type": "fix",
+          "text": "parallelize widget doc fetches, add console logging, apply MAN styling"
+        },
+        {
+          "type": "fix",
+          "text": "mock /api/widgets with its real {data: [...]} response shape"
+        }
+      ]
+    }
+  ]
+}

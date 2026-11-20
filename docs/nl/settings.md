@@ -1,13 +1,14 @@
 # Instellingen
 
-Deze widget heeft **geen instellingen**. Het volstaat om hem op een pagina te
-plaatsen; de inhoud en navigatie worden volledig bepaald door de
-geïnstalleerde widgets.
-
-## Wat u wel kunt aanpassen
-
-| Punt | Beschrijving |
+| Instelling | Beschrijving |
 | --- | --- |
-| Doelgroep | Vloeit voort uit de pagina, niet uit de widget. Een pagina voor redacteuren is zinvol. |
-| Plaatsing | Bij voorkeur over de volledige breedte van de pagina. De zijbalk en de inhoud hebben ruimte nodig. |
-| Omvang | Niet instelbaar: er verschijnen altijd alle geïnstalleerde widgets die documentatie bevatten. |
+| **Widget** | Verplicht veld. De widget waarvan de documentatie in het blok wordt weergegeven. Je kunt kiezen uit alle widgets die in deze omgeving zijn geïnstalleerd; widgets zonder documentatie zijn gemarkeerd. |
+
+Al het andere vloeit voort uit de geselecteerde widget:
+
+| Punt | Herkomst |
+| --- | --- |
+| Hoofdstuk | Uit de documentatie van de widget, in de volgorde daarvan, plus **wijzigingen**. |
+| Status | De laatste release van de widget. Een oudere versie kan niet worden geselecteerd. |
+| Taal | De taal van de lezers, anders Duits. |
+| Doelgroep | Afkomstig van de pagina, niet van de widget. |

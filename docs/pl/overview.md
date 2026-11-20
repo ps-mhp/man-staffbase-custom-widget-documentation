@@ -1,26 +1,29 @@
-# Dokumentacja widżetów
+# Dokumentacja widżetu
 
-Ten widżet generuje stronę, którą właśnie czytasz: stronę
-informacyjną dotyczącą **wszystkich** widżetów zainstalowanych w tym środowisku Staffbase
-— zawierającą opisy, ustawienia, instrukcje i często zadawane pytania.
+Ten widżet wyświetla dokumentację **jednego** widżetu bezpośrednio na
+stronie Staffbase: opis, instrukcję krok po kroku, ustawienia,
+często zadawane pytania oraz zmiany wprowadzone w ostatnich wersjach.
 
-Jest ona przeznaczona jako **wewnętrzna strona pomocy dla redaktorów**: po
-utworzeniu aktualizuje się automatycznie.
+Jest to część przeznaczona do czytania na stronach dokumentacji w sekcji „Widżety niestandardowe” — znajduje się ona w
+zakładce **Więcej o widżecie**. Można go jednak umieścić na dowolnej stronie, na przykład obok
+instrukcji dla zespołu.
 
-## Co w niej znajdziesz
+## Co widzą czytelnicy
 
-- Po lewej stronie znajduje się **wyszukiwarka** oraz lista wszystkich zainstalowanych widżetów. Kliknięcie
-  na widżet otwiera jego podstrony (przegląd, instrukcja krok po kroku,
-  ustawienia, często zadawane pytania).
-- Po prawej stronie znajduje się treść wybranej podstrony. Bez zaznaczenia wyświetla się
-  **przegląd widżetów** z jedną kafelką dla każdego widżetu.
-- W przypadku niektórych widżetów dostępny jest **przykład na żywo**: prawdziwy widżet z prawdziwymi danymi
-  bezpośrednio w dokumentacji.
+- Po lewej stronie znajdują się **rozdziały** widżetu, po prawej – wybrany rozdział. W
+  wąskich kolumnach rozdziały są wyświetlane w formie listy nad tekstem.
+- Po otwarciu widżetu wybrany jest pierwszy rozdział. Odnośniki w tekście do innego
+  rozdziału przenoszą bezpośrednio do niego.
+- W sekcji **Zmiany** znajdują się nowości i poprawki z ostatnich wersji.
+- Na samym dole podana jest wersja widżetu, której dotyczy opis.
 
-## Dlaczego strona jest zawsze aktualna
+## Dlaczego dokumentacja jest zawsze aktualna
 
-Widżet sam sprawdza, które widżety są zainstalowane, i pobiera ich
-dokumentację dotyczącą danej wersji. Nie ma więc nic do aktualizowania:
-gdy pojawia się nowy widget lub któryś z nich zostaje zaktualizowany, odpowiednia
-dokumentacja pojawia się sama. I odwrotnie: to, co tu widnieje, pochodzi z danego
-widgetu — nie można tego edytować na tej stronie.
+Teksty pochodzą z samego widżetu, w stanie z jego ostatniej wersji. Nie
+ma więc potrzeby aktualizowania treści: jeśli wtyczka zostanie zaktualizowana, jej dokumentacja
+również. Z drugiej strony nie można tutaj niczego edytować.
+
+## Język
+
+Czytelnicy widzą dokumentację w swoim języku, o ile wtyczka zawiera
+tłumaczenie — w przeciwnym razie jest ona w języku niemieckim.

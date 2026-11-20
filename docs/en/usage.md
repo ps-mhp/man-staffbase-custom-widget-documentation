@@ -1,20 +1,22 @@
 # Step by Step
 
-## Create a Help Page
+## Adding a Widget's Documentation to a Page
 
-1. Create a new page, such as “Widget Help,” and assign it to the editorial team as
-   the target audience.
-2. Place the **Widget Documentation** widget on the page.
-3. No further configuration is needed—the widget has no settings.
-4. Save and publish.
+1. Open the page in Studio and insert the **Widget Documentation** block.
+2. In the **Select Widget** window, select the desired widget
+   under **Widget**. Below that, you’ll see the icon and a brief description for verification.
+3. Click **Apply**, then save and publish the page.
 
-Recommendation: Have the page span the **full width** and do not
-place any additional widgets next to it. The documentation comes with its own navigation
-and requires space.
+The window will reopen later via **Select Widget** in the block’s
+dialog.
 
-## Look Something Up
+## Allow for Space
 
-1. Type a term into the **Search …** field on the left; the search covers
-   all page titles and the text of all widgets.
-2. Click on a result—the widget it belongs to is shown in parentheses.
-3. Alternatively, click the widget on the left and then select the desired page.
+The documentation includes its own chapter navigation. It’s best read
+in a wide column; in a narrow column, the chapters overlap the text.
+
+## Documentation Pages Under “Custom Widgets”
+
+These pages are created automatically when a widget is released: at the top is the
+stage, followed by two tabs—**Examples** with actual blocks on the page
+and **More About the Widget** featuring this widget. There’s nothing to do manually there.
